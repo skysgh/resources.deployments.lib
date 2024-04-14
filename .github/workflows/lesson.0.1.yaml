@@ -19,15 +19,15 @@ on:
     - main
 jobs:
   JobUno:
-    runs-on: linux
+    runs-on: ubuntu-latest
     steps:  
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
   JobDuo:
-    runs-on: linux
+    runs-on: ubuntu-latest
     steps:  
       - run: echo "🎉 The job is run by ${{ github.actor }}."
   JobTres:
-    runs-on: linux
+    runs-on: ubuntu-latest
     steps:  
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."      
   JobQuatro:
