@@ -24,10 +24,13 @@ jobs:
     steps:  
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
   JobDuo:
+    steps:  
       - run: echo "🎉 The job is run by ${{ github.actor }}."
   JobTres:
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+    steps:  
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."      
   JobQuatro:
-      - run: echo "🔎 macro: $(defaultLocation)."
-      - run: echo "🔎 macro: $(branch)."
-      - run: echo "🔎 macro: ${{branch}}."
+    steps:  
+      - run: echo "🔎 macro... $(defaultLocation)."
+      - run: echo "🔎 macro... $(branch)."
+      - run: echo "🔎 macro... ${{branch}}."
