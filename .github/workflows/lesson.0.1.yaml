@@ -1,11 +1,13 @@
 
 # An Action needs a Name, Triggers, Jobs.
 # aided by variables:
-
-variables:
-  branch: main
-
 name: LetsGo
+
+env:
+  branch: main
+  resourceGroupName: TemplateDeploymentRG
+  defaultLocation : uksouth
+  bicepfilePath: ./SOURCE/Storage-Template/main.bicep    
 # Triggering 3 choices of triggers. On a specific branch.
 on:
   workflow_dispatch:
@@ -15,22 +17,23 @@ on:
   pull_request:
     branches:
     - $(branch)
-env:
-  resourceGroupName: TemplateDeploymentRG
-  defaultLocation : uksouth
-  bicepfilePath: ./SOURCE/Storage-Template/main.bicep    
 jobs:
-  JobUno: 
+  JobUno:
+    runs-on: linux
     steps:  
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
   JobDuo:
+    runs-on: linux
     steps:  
       - run: echo "🎉 The job is run by ${{ github.actor }}."
   JobTres:
+    runs-on: linux
     steps:  
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."      
   JobQuatro:
+    runs-on: linux
     steps:  
+      - run: echo "...let's go"
       - run: echo "🔎 macro... $(defaultLocation)."
       - run: echo "🔎 macro... $(branch)."
-      - run: echo "🔎 macro... ${{branch}}."
+      - run: echo "🔎 macro... ${{env.branch}}."
