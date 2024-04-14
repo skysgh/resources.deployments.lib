@@ -13,10 +13,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - $(branch)
+    - main
   pull_request:
     branches:
-    - $(branch)
+    - main
 jobs:
   JobUno:
     runs-on: linux
