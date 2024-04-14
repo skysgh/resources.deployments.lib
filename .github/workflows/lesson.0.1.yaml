@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:  
       - run: echo "...let's go"
-      - run: echo "🔎 macro... $(defaultLocation)."
-      - run: echo "🔎 macro... $(branch)."
+      - run: echo "🔎 macro... ${{env.defaultLocation}}."
       - run: echo "🔎 macro... ${{env.branch}}."
+      - run: echo "🔎 token... ${{secrets.GITHUB_TOKEN}}."
+      - run: echo "🔎 lets go to the ... ${{vars.foo}}."
