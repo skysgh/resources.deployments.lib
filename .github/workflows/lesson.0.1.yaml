@@ -22,19 +22,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:  
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-  JobDuo:
-    runs-on: ubuntu-latest
-    steps:  
       - run: echo "🎉 The job is run by ${{ github.actor }}."
-  JobTres:
-    runs-on: ubuntu-latest
-    steps:  
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."      
-  JobQuatro:
-    runs-on: ubuntu-latest
-    steps:  
       - run: echo "...let's go"
       - run: echo "🔎 macro... ${{env.defaultLocation}}."
       - run: echo "🔎 macro... ${{env.branch}}."
       - run: echo "🔎 token... ${{secrets.GITHUB_TOKEN}}."
       - run: echo "🔎 lets go to the ... ${{vars.foo}}."
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        # repository: ''
+        # The branch, tag or SHA to checkout. When checking out the repository that
+        # triggered a workflow, this defaults to the reference or SHA for that event.
+        # Otherwise, uses the default branch.
+          ref: 'main'
+        # etc...see source documentatino
+
