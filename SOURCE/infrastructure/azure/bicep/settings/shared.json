@@ -1,0 +1,15 @@
+{
+  "version": "0.1",
+  "namingConventions": {
+    "namingFormat": "{0}{1}{2}",
+    "namingPartFormat":"_{0}",
+    "parentNameIsLonger": true
+  },
+  "defaultTags":{},
+  "defaultSKUs":{
+    "staticWebApps":"Free",
+    "appPlans":"F1"
+  }
+}
+
+

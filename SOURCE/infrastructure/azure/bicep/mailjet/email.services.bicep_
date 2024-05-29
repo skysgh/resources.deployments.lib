@@ -1,0 +1,104 @@
+// ---------- ---------- ---------- 
+// About:
+// TODO
+// Tip:
+// * ARM Templates *can* have Comments in them, bu VS Code requires configuration to stop warnings: 
+//   See: https://stackoverflow.com/a/47834826/9314395
+// * Develop based on conventions:
+//   * https://github.com/Azure/azure-quickstart-templates/blob/master/1-CONTRIBUTION-GUIDE/best-practices.md
+//   * Based on expensive experience: only use fully qualified, full-type, resource-specific, naming for 
+//     variables (eg: microsoftWebSitesResourceName, rather than abbreviaations such as siteResourceName, 
+//     siteName, etc.) so that variables are consistent here, as well as well as parent templates. 
+//     If they are the same across templates they can be cut pasted. Whereas it's *really*
+//     hard to track down bugs when everything is called by an abbreviation, such as 'resourceName'.
+// ---------- ---------- ---------- 
+
+// ======================================================================
+// References:
+// ======================================================================
+// https://learn.microsoft.com/en-us/azure/app-service/quickstart-arm-template?pivots=platform-linux
+// https://learn.microsoft.com/en-us/azure/app-service/provision-resource-bicep
+
+// ======================================================================
+// Scope
+// ======================================================================
+// Scope is parent resourceGroup:
+targetScope='resourceGroup'
+
+// ======================================================================
+// Import Shared Settings
+// ======================================================================
+var sharedSettings = loadJsonContent('../../settings/shared.json')
+
+// ======================================================================
+// Default Name, Location, Tags,
+// ======================================================================
+
+@description('the unique name of this site (often is PROJECTNAME + a unique number).')
+param resourceName string
+
+@description('The id of the resource for the site.')
+// @allowed('')
+param resourceLocationId string //'westus'
+
+@description('The tags to merge for this resource.')
+param resourceTags object = {}
+
+// ======================================================================
+// Default SKU, Kind, Tier where applicable
+// ======================================================================
+
+
+// ======================================================================
+// Resource other Params
+// ======================================================================
+
+
+   @description('')
+   @allowed(['mailjet'])
+   param servicePublisher string = 'mailjet'
+
+   @description('')
+   @allowed(['mailjet'])
+   param serviceProduct string = 'mailjet'
+
+   @description('')
+   @allowed(['free_azure','bronze_azure','bronzepremium_azure'])
+   param servicePlan string = 'free_azure'
+
+   @description('')
+   param promoCode string = ''
+
+// ======================================================================
+// Default Variables: useResourceName, useTags
+// ======================================================================
+var useName = toLower(resourceName)
+var useLocation = resourceLocationId
+var useTags = union(resourceTags,sharedSettings.defaultTags)
+
+// ======================================================================
+// Resource bicep
+// ======================================================================
+resource resource 'Mailjet.Email/services@2017-10-10' = {
+  name: useName
+  location: useLocation
+  tags: useTags
+  plan:{
+    publisher: servicePublisher
+    product: serviceProduct
+    nam: servicePlan
+    promotionCode: servicePromotionCode
+  }
+}
+
+// ======================================================================
+// Default Outputs: resource, resourceId, resourceName & variable sink
+// ======================================================================
+// Provide ref to developed resource:
+output resource object = resource
+// return the id (the fully qualitified name) of the newly created resource:
+output resourceId string = resource.id
+// return the (short) name of the newly created resource:
+output resourceName string = resource.name
+// param sink (to not cause error if param is not used):
+output _ bool = startsWith(concat('${sharedSettings.version}'), '.')
