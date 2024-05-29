@@ -1,0 +1,200 @@
+name: Deploy to Environment
+
+
+# Triggers, on specific branches
+on:
+  # marks it as a callee workflow:
+  workflow_call:
+    inputs:
+      foo:
+        required: true
+        type: string
+
+env:
+  # ======================================================================
+  # PROJECT VARIABLES
+  # ======================================================================
+  # The project name, which informs naming of 
+  # Azure resource groups and resource names 
+  # definately changes per project.
+  # Note: it could be set here, or come from GitHUb repo vars:
+  PROJECT_NAME: 'BASE'
+  PROJECT_SERVICE_NAME: ''
+  PROJECT_DESCRIPTION: 'Creates backend RG, WEB APP SERVER, SQL SERVER, etc.'
+  # ======================================================================
+  # SRC VARIABLES
+  # ======================================================================
+  SRC_GITHUB_BRANCH: main
+  SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR: "/"
+  SRC_DIRECTORY: "/"
+  # ======================================================================
+  # LIB VARIABLES
+  # ======================================================================
+  # The file invoked changes per project/service/tier:
+  LIB_BICEP_FILENAME: "backend-deployment.bicep"
+  # Whereas these vars probably don't change project to project:
+  LIB_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
+  LIB_REPO_BRANCH: main
+  LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR: "DeploymentLib"
+  LIB_MAIN_BICEP_FILE_DIR: "SOURCE/infrastructure/azure/bicep/recipes"
+  # ======================================================================
+
+
+# Running on one runner:      
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+    environment: NP
+    env:
+      FOO: BAR
+    steps:
+      # ==================================================
+      # Check information
+      - name: "01: Summarise Context Before Starting"
+        run: |
+          echo "::group::Project Vars"
+          echo "Project Name                      : '${{env.PROJECT_NAME}}'"
+          echo "Project Service                   : '${{env.PROJECT_SERVICE_NAME}}'"
+          echo "Project Description               : '${{env.PROJECT_DESCRIPTION}}'"
+          echo "::endgroup::"
+          echo "::group::Dependencies (Injected Variables & Secrets)"
+          echo "GitHub Token                      : ..."
+          echo "Azure Creds                       : '${{secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}'"
+          echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
+          echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
+          echo "::endgroup::"
+          echo "::group::Lib Variables"
+          echo "Lib Repo GitHub UserName/Repo     : '${{env.LIB_GITHUB_USER_AND_REPO_NAME}}'"
+          echo "Lib Repo Local Relative Dir       : '${{env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR}}'"
+          echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_MAIN_BICEP_FILE_DIR}}'"
+          echo "Lib Repo Bicep FileName           : '${{env.LIB_BICEP_FILENAME}}'"
+          echo "::endgroup::"
+          echo "::group::Project Repo Variables"
+          echo "Project Repo GitHub UserName/Repo : ..."
+          echo "Project Repo Branch               : '${{env.SRC_GITHUB_BRANCH}}'"
+          echo "Project Repo Local Relative Dir   : '${{env.SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR}}'"
+          echo "Proejct Repo Src Directory        : '${{env.SRC_DIRECTORY}}'"
+          echo "Porject Repo Src FileName         : n/a"
+          echo "::endgroup::"
+          echo "::group::Azure Variables"
+          echo "Azure Subscription                : '${{secrets.NP_AZURE_SUBSCRIPTION_ID}}'"
+          echo "Azure Resource Location 0         : '${{vars.AZURE_LOCATION_ID_0}}'"
+          echo "Azure Resource Location 1         : '${{vars.AZURE_LOCATION_ID_1}}'"
+          echo "Azure Resource Location 2         : '${{vars.AZURE_LOCATION_ID_2}}'"
+          echo "Azure Resource Location 3         : '${{vars.AZURE_LOCATION_ID_3}}'"
+          echo "::endgroup::"
+      # ==================================================
+      - name: "02: Concepts & Notes"
+        run: |
+          echo "::group::Database Server"
+          echo "- Collation is as is for handling Maori."
+          echo "::endgroup::"
+          echo "::group::Database"
+          echo "- Collation is as is for handling Maori."
+          echo "- Sizing is standard and not Premium,"
+          echo "  expecting developers to aggressively use Cache."
+          echo "- Collation is as is for handling Maori."
+          echo "- TLS is 1.2 because Azure is not yet supporting 1.3."
+          echo "::endgroup::"
+      # ==================================================
+      # Checkout code from *this* repo
+      # onto runner (not target SWA...)
+      # without giving directory, so default:
+      - name: "03: Checkout this Project's Repo"
+        uses: actions/checkout@v4
+        # Optional to specify 'repository' or 'path'
+        # with:
+        #  repository: ${{env.THIS_REPO}}
+        #  path: ${{env.SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR}}
+      # ==================================================
+      # Login to Azure, in order to manipulate remote resources
+      - name: "04: Azure Login, using Action, to enable building resources"
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}
+      # ==================================================
+      # Checkout code from *lib* repo
+      # to a directory parallel to this repo's code
+      - name: "05: Checkout Library Repo"
+        uses: actions/checkout@v4
+        with:
+          repository: "skysgh/resources.deployments.lib"
+          path: ${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}
+      # ==================================================
+      - name: "06: Summarise Lib Contents"
+        run: |
+          echo "::group::Run Context"
+          echo "Current Directory:"
+          echo "$GITHUB_WORKSPACE:"               : ${{github.env}}
+          pwd
+          echo "Target Lib File:"
+          ls -la "${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}/${{ env.LIB_MAIN_BICEP_FILE_DIR }}/${{env.LIB_BICEP_FILENAME}}"
+          echo "::endgroup::"
+          echo  
+          echo "::group::Run Context (Extended Info)"
+          echo "Lib  Folder:"
+          tree "${{env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR}}"
+          echo "::endgroup::"
+          echo 
+
+      # ==================================================
+      - name: "07: Run main bicep file (${{env.PROJECT_DESCRIPTION}})"
+        uses: azure/arm-deploy@v1
+        with:
+          scope: subscription
+          region: ${{ vars.AZURE_LOCATION_ID_2 }}
+          subscriptionId: ${{ secrets.NP_AZURE_SUBSCRIPTION_ID }}
+          
+          #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_BICEP_FILENAME}}"
+          template: "${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}/${{ env.LIB_MAIN_BICEP_FILE_DIR }}/${{env.LIB_BICEP_FILENAME}}"
+
+          # Consider: sqlServerDbResourxeLocationId: 'F1','D1','B1','B2','S1','S2'
+          # Consider: sqlServerDbResourceSKU: 'Basic', 'S0', 'S1', 'S2'
+          # Consider: webServerFarmsResourceSKU can't be Shared/D1 if Linux is used
+          # 
+          # Do NOT wrap values in single quotes (only double quotes if need be)
+          # Do NOT inject blank lines.
+
+          # "${{ env.PROJECT_ENV_ID}}"
+          
+          parameters: >
+            buildResourceGroup=true
+            projectName="${{ env.PROJECT_NAME }}"
+            projectServiceName="${{ env.PROJECT_SERVICE_NAME }}"
+            environmentId="NP"
+            defaultResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            logicResourceGroupLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            webServerFarmsResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"  
+            webServerFarmsResourceSKU="S1"
+            webSitesHttpOnly=true
+            webSitesIdentityType="SystemAssigned"
+            webSitesLinuxFxVersion="DOTNETCORE|Latest"
+            webSitesSourceControlsRepositoryUrl="https://todo"
+            webSitesSourceControlsRepositoryBranch="main"
+            webSitesSourceControlsRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
+            webSitesSourceControlsRepositorySourceLocation="/"
+            dataResourceGroupLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            sqlServerResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            sqlServerMinimalTlsVersion="1.2"
+            sqlServerIdentityType="None"
+            sqlServerAdminUserName="${{secrets.DB_ADMIN_NAME}}"
+            sqlServerAdminPassword="${{secrets.DB_ADMIN_PWD}}"
+            sqlServerDbResourceName="Default"
+            sqlServerDbResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            sqlServerDbResourceSKU="S1"
+            sqlServerDbResourceTier="Standard"
+            sqlServerDbAvailabilityZone="NoPreference"
+            sqlServerDbZoneRedundant=false
+            sqlServerDbUseFreeLimit=false
+            sqlServerDbFreeLimitExhaustionBehavior="BillOverUsage"
+            sqlServerDbAutoPauseDelay=120
+            sqlServerDbSampleName=""
+            sqlServerDbIsLedgerOn=true
+            sqlServerDbCreateMode="Default"
+            sqlServerDbCollation="SQL_Latin1_General_CP1_CI_AS"
+            sqlServerDbCatalogCollation="DATABASE_DEFAULT"
+            
+          # Removed
+          #  repositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
+
+          failOnStdErr: false
