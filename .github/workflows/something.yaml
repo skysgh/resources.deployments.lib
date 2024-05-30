@@ -54,6 +54,17 @@ jobs:
       # Check information
       - name: "01: Summarise Context Before Starting"
         run: |
+          echo "::group::Initiation Information"
+          echo "Actor                             : ${{github.actor}}"
+          echo "Event                             : ${{github.event_name}}"
+          echo "::endgroup::"
+          echo "::group::Repo Information"
+          echo "Repo                              : ${{github.repository}}"
+          echo "Repo Owner                        : ${{github.owner}}"
+          echo "::endgroup::"
+          echo "::group::Runner Information"
+          echo "Workspace                         : ${{github.Workspace}}"
+          echo "::endgroup::"
           echo "::group::Project Vars"
           echo "Project Name                      : '${{env.PROJECT_NAME}}'"
           echo "Project Service                   : '${{env.PROJECT_SERVICE_NAME}}'"
