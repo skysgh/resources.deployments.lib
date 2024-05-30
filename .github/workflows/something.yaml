@@ -18,25 +18,27 @@ env:
   # Azure resource groups and resource names 
   # definately changes per project.
   # Note: it could be set here, or come from GitHUb repo vars:
-  PROJECT_NAME: 'BASE'
-  PROJECT_SERVICE_NAME: ''
-  PROJECT_DESCRIPTION: 'Creates backend RG, WEB APP SERVER, SQL SERVER, etc.'
+  # Provided by invoker: PROJECT_NAME: '...'
+  # Provided by invoker: PROJECT_SERVICE_NAME: '...'
+  # Provided by invoker: PROJECT_DESCRIPTION: '...'
   # ======================================================================
   # SRC VARIABLES
   # ======================================================================
-  SRC_GITHUB_BRANCH: main
-  SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR: "/"
-  SRC_DIRECTORY: "/"
+  # Provided by Invoker: SRC_REPO_GITHUB_USER_AND_REPO_NAME: ...
+  # Provided by invoker: SRC_REPO_BRANCH: main
+  # Provided by invoker: SRC_REPO_ENTRY_FOLDER: "/"
+  # Provided by invoker: SRC_REPO_RELATIVE_DEPLOYMENT_DIR: "/"
   # ======================================================================
   # LIB VARIABLES
   # ======================================================================
+  # 
   # The file invoked changes per project/service/tier:
-  LIB_BICEP_FILENAME: "backend-deployment.bicep"
+  LIB_REPO_MAIN_BICEP_FILE: "backend-deployment.bicep"
+  # Provided by Invoker: LIB_REPO_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
   # Whereas these vars probably don't change project to project:
-  LIB_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
   LIB_REPO_BRANCH: main
-  LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR: "DeploymentLib"
-  LIB_MAIN_BICEP_FILE_DIR: "SOURCE/infrastructure/azure/bicep/recipes"
+  LIB_REPO_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
+  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
   # ======================================================================
 
 
@@ -64,16 +66,16 @@ jobs:
           echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
           echo "::endgroup::"
           echo "::group::Lib Variables"
-          echo "Lib Repo GitHub UserName/Repo     : '${{env.LIB_GITHUB_USER_AND_REPO_NAME}}'"
-          echo "Lib Repo Local Relative Dir       : '${{env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR}}'"
-          echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_MAIN_BICEP_FILE_DIR}}'"
-          echo "Lib Repo Bicep FileName           : '${{env.LIB_BICEP_FILENAME}}'"
+          echo "Lib Repo GitHub UserName/Repo     : '${{env.LIB_REPO_GITHUB_USER_AND_REPO_NAME}}'"
+          echo "Lib Repo Local Relative Dir       : '${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
+          echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_REPO_ENTRY_FOLDER}}'"
+          echo "Lib Repo Bicep FileName           : '${{env.LIB_REPO_MAIN_BICEP_FILE}}'"
           echo "::endgroup::"
           echo "::group::Project Repo Variables"
           echo "Project Repo GitHub UserName/Repo : ..."
-          echo "Project Repo Branch               : '${{env.SRC_GITHUB_BRANCH}}'"
-          echo "Project Repo Local Relative Dir   : '${{env.SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR}}'"
-          echo "Proejct Repo Src Directory        : '${{env.SRC_DIRECTORY}}'"
+          echo "Project Repo Branch               : '${{env.SRC_REPO_BRANCH}}'"
+          echo "Project Repo Local Relative Dir   : '${{env.SRC_REPO_RELATIVE_DEPLOYMENT_DIR}}'"
+          echo "Proejct Repo Src Directory        : '${{env.SRC_REPO_ENTRY_FOLDER}}'"
           echo "Porject Repo Src FileName         : n/a"
           echo "::endgroup::"
           echo "::group::Azure Variables"
@@ -105,7 +107,7 @@ jobs:
         # Optional to specify 'repository' or 'path'
         # with:
         #  repository: ${{env.THIS_REPO}}
-        #  path: ${{env.SRC_GITHUB_RELATIVE_DEPLOYMENT_DIR}}
+        #  path: ${{env.SRC_REPO_RELATIVE_DEPLOYMENT_DIR}}
       # ==================================================
       # Login to Azure, in order to manipulate remote resources
       - name: "04: Azure Login, using Action, to enable building resources"
@@ -119,7 +121,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: "skysgh/resources.deployments.lib"
-          path: ${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}
+          path: ${{ env.LIB_REPO_DEPLOYMENT_DIR }}
       # ==================================================
       - name: "06: Summarise Lib Contents"
         run: |
@@ -128,12 +130,12 @@ jobs:
           echo "$GITHUB_WORKSPACE:"               : ${{github.env}}
           pwd
           echo "Target Lib File:"
-          ls -la "${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}/${{ env.LIB_MAIN_BICEP_FILE_DIR }}/${{env.LIB_BICEP_FILENAME}}"
+          ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           echo "::endgroup::"
           echo  
           echo "::group::Run Context (Extended Info)"
           echo "Lib  Folder:"
-          tree "${{env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR}}"
+          tree "${{env.LIB_REPO_DEPLOYMENT_DIR}}"
           echo "::endgroup::"
           echo 
 
@@ -145,8 +147,8 @@ jobs:
           region: ${{ vars.AZURE_LOCATION_ID_2 }}
           subscriptionId: ${{ secrets.NP_AZURE_SUBSCRIPTION_ID }}
           
-          #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_BICEP_FILENAME}}"
-          template: "${{ env.LIB_LOCAL_RELATIVE_DEPLOYMENT_DIR }}/${{ env.LIB_MAIN_BICEP_FILE_DIR }}/${{env.LIB_BICEP_FILENAME}}"
+          #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
+          template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
 
           # Consider: sqlServerDbResourxeLocationId: 'F1','D1','B1','B2','S1','S2'
           # Consider: sqlServerDbResourceSKU: 'Basic', 'S0', 'S1', 'S2'
