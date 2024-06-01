@@ -118,7 +118,7 @@ jobs:
           echo "  - Firewall: default baseline firewall capabilities are provided by Azure",
           echo "    for free, but it remains important that developers develop following best" 
           echo "    security practice, namely preventing injection attacks, while they authenticate,"
-          echp "    authorise, log, monitor, alert activity as requierd."
+          echo "    authorise, log, monitor, alert activity as requierd."
           echo " - Storage Account:"
           echo "   - one container is for direct unauthenticated access from"
           echo "     service client to resource saving cost."
