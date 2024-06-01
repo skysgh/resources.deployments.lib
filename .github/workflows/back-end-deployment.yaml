@@ -5,6 +5,8 @@ name: Deploy to Environment
 on:
   # marks it as a callee workflow:
   workflow_call:
+  # define optional and requierd inputs
+  # required from caller: 
     inputs:
       foo:
         required: true
@@ -31,11 +33,13 @@ env:
   # ======================================================================
   # LIB VARIABLES
   # ======================================================================
-  # 
   # The file invoked changes per project/service/tier:
+  # As do the parameters (at bottom) that are supplied.
   LIB_REPO_MAIN_BICEP_FILE: "backend-deployment.bicep"
-  # Provided by Invoker: LIB_REPO_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
-  # Whereas these vars probably don't change project to project:
+  # Whereas these vars probably don't change project to project,
+  # which define where to download lib files from, the dir to deploy to here
+  # and the folder to find the above script in:
+  LIB_REPO_GITHUB_USER_AND_REPO_NAME: 'skysgh/resources.deployments.lib'
   LIB_REPO_BRANCH: main
   LIB_REPO_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
@@ -44,44 +48,127 @@ env:
 
 # Running on one runner:      
 jobs:
+  # again defining it as a callee job:
   reusable_workflow_job:
+    # the rest is as per normal job:
     runs-on: ubuntu-latest
+    # TODO: make this changeable by branch/tag:
     environment: NP
     env:
-      FOO: BAR
+      bar: baz
     steps:
       # ==================================================
-      # Check information
+      - name: "01: Explanations"
+        run: |
+          echo "::group::Purpose"
+          echo "At a high level, it is to develop"
+          echo "the backend infrastructure needed for"
+          echo "WWW accessible services."
+          echo "::endgroup::"
+          echo "::group::Workflow Chaining"
+          echo "This is a reusable 'recipe' workflow"
+          echo "intended to push as much logic as reasonable"
+          echo "into a reusable file, leaving the minimum setup"
+          echo "to a 'thin' yaml file in the service's source code."
+          echo "::endgroup::"
+          echo "::group::Components"
+          echo "The components it develops are as follows:"
+          echo "- A shared App Service Environment, on which is hosted"
+          echo "- An App Service, which is given"
+          echo "- A Managed Identity, given access to "
+          echo "- A Runtime KeyVault, and "
+          echo "- A Storage Account, on which"
+          echo "- A Publicly accesssible Container (for media), and"
+          echo "- A Privately accesssible Container (for media resources)"
+          echo "- A Cache Service"
+          echo "- A Search Service"
+          echo "- A Sql Server Database Server, on which"
+          echo "- A firewall rule is developed to restrict/permit only Azure devices, and"
+          echo "- A Sql Server Database is developed, with the
+          echo "- the MI given create permission to the database, so that"
+          echo "  has sufficient rights to use CodeFirst to create a Db schema."
+          echo "- Backups are developed to store the db data to the Storage Account for 31 days."
+          echo "::endgroup::"
+          echo "::group::Infrastructure Details"
+          echo "As for individual component purpose and settings:"
+          echo "- Sql Server:"
+          echo "  - Resourcing:"
+          echo "    - SKU is standard and not Premium,"
+          echo "      until a proven need unsovlvable otherwirse is shown,"
+          echo "      expecting developers to use Cache aggressively."
+          echo "    - after 2 hours of no activity, it is hybernated to save cost,"
+          echo "      affecting the fist client after that period (e.g. in the morning)."
+          echo "    - Sizing is 1Gb, expecting developers"
+          echo "      design concisely, and"
+          echo "      save media separately (in storage account containers)"
+          echo "  - Security:"
+          echo "    - TLS is 1.2 because Azure is not yet supporting 1.3."
+          echo "      (although the parameter is accepted, it times out without explanation)."
+          echo "  - Accessibility:"
+          echo "    - Collation is as is for handling Maori."
+          echo "  - Recoverability:"
+          echo "    - Developers are expected to delete by state, not physically."
+          echo "    - Ledger functionality is on by default."
+          echo "    - Backup is extended to 31 days."
+          echo "- Web Server:"
+          echo "  - ASE: hosted on a shared ASE because it is immaterial to risk"
+          echo "    (essentially, a negligeable probability that a bad actor gains access"
+          echo "    specifically due to being installed on the same device, as oppossed"
+          echo "    to gaining access by other means which an isolated ASE can't solve anyway)."
+          echo "  - Firewall: default baseline firewall capabilities are provided by Azure",
+          echo "    for free, but it remains important that developers develop following best" 
+          echo "    security practice, namely preventing injection attacks, while they authenticate,"
+          echp "    authorise, log, monitor, alert activity as requierd."
+          echo " - Storage Account:"
+          echo "   - one container is for direct unauthenticated access from"
+          echo "     service client to resource saving cost."
+          echo "   - one container is for managed authenticated and authorised proxied access from"
+          echo "     service client to service to storage account."
+          echo "   - a separate service account and containers are used for storage backup."
+          echo " - Cache:"
+          echo "   - essential to reducing pressure on Sql Server."
+          echo "   - is not an inconsequential cost per instance so there is an economic"
+          echo "     argument to be made for using a shared device amongst environments,"
+          echo "     at the cost of losing parity between environments."
+          echo "::endgroup::"
+      # ==================================================
+      # For debugging/understanding.
       - name: "01: Summarise Context Before Starting"
         run: |
           echo "::group::Initiation Information"
           echo "Actor                             : ${{github.actor}}"
           echo "Event                             : ${{github.event_name}}"
           echo "::endgroup::"
+          echo ""
           echo "::group::Repo Information"
           echo "Repo                              : ${{github.repository}}"
           echo "Repo Owner                        : ${{github.owner}}"
           echo "::endgroup::"
+          echo ""
           echo "::group::Runner Information"
           echo "Workspace                         : ${{github.Workspace}}"
           echo "::endgroup::"
+          echo ""
           echo "::group::Project Vars"
           echo "Project Name                      : '${{env.PROJECT_NAME}}'"
           echo "Project Service                   : '${{env.PROJECT_SERVICE_NAME}}'"
           echo "Project Description               : '${{env.PROJECT_DESCRIPTION}}'"
           echo "::endgroup::"
+          echo ""
           echo "::group::Dependencies (Injected Variables & Secrets)"
           echo "GitHub Token                      : ..."
           echo "Azure Creds                       : '${{secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}'"
           echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
           echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
           echo "::endgroup::"
+          echo ""
           echo "::group::Lib Variables"
           echo "Lib Repo GitHub UserName/Repo     : '${{env.LIB_REPO_GITHUB_USER_AND_REPO_NAME}}'"
           echo "Lib Repo Local Relative Dir       : '${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
           echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_REPO_ENTRY_FOLDER}}'"
           echo "Lib Repo Bicep FileName           : '${{env.LIB_REPO_MAIN_BICEP_FILE}}'"
           echo "::endgroup::"
+          echo ""
           echo "::group::Project Repo Variables"
           echo "Project Repo GitHub UserName/Repo : ..."
           echo "Project Repo Branch               : '${{env.SRC_REPO_BRANCH}}'"
@@ -89,25 +176,13 @@ jobs:
           echo "Proejct Repo Src Directory        : '${{env.SRC_REPO_ENTRY_FOLDER}}'"
           echo "Porject Repo Src FileName         : n/a"
           echo "::endgroup::"
+          echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.NP_AZURE_SUBSCRIPTION_ID}}'"
           echo "Azure Resource Location 0         : '${{vars.AZURE_LOCATION_ID_0}}'"
           echo "Azure Resource Location 1         : '${{vars.AZURE_LOCATION_ID_1}}'"
           echo "Azure Resource Location 2         : '${{vars.AZURE_LOCATION_ID_2}}'"
           echo "Azure Resource Location 3         : '${{vars.AZURE_LOCATION_ID_3}}'"
-          echo "::endgroup::"
-      # ==================================================
-      - name: "02: Concepts & Notes"
-        run: |
-          echo "::group::Database Server"
-          echo "- Collation is as is for handling Maori."
-          echo "::endgroup::"
-          echo "::group::Database"
-          echo "- Collation is as is for handling Maori."
-          echo "- Sizing is standard and not Premium,"
-          echo "  expecting developers to aggressively use Cache."
-          echo "- Collation is as is for handling Maori."
-          echo "- TLS is 1.2 because Azure is not yet supporting 1.3."
           echo "::endgroup::"
       # ==================================================
       # Checkout code from *this* repo
