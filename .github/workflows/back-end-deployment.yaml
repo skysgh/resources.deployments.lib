@@ -84,7 +84,7 @@ jobs:
           echo "- A Search Service"
           echo "- A Sql Server Database Server, on which"
           echo "- A firewall rule is developed to restrict/permit only Azure devices, and"
-          echo "- A Sql Server Database is developed, with the
+          echo "- A Sql Server Database is developed, with the"
           echo "- the MI given create permission to the database, so that"
           echo "  has sufficient rights to use CodeFirst to create a Db schema."
           echo "- Backups are developed to store the db data to the Storage Account for 31 days."
