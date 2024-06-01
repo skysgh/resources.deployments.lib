@@ -62,7 +62,7 @@ jobs:
     # the rest is as per normal job:
     runs-on: ubuntu-latest
     # TODO: make this changeable by branch/tag:
-    environment: NP
+    environment: "NP"
     env:
       bar: baz
     steps:
