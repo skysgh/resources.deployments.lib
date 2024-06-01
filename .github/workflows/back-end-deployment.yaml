@@ -192,8 +192,7 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Dependencies (Injected Variables & Secrets)"
-          echo "GitHub Token                      : ..."
-          echo "Azure Creds                       : '${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}'"
+          echo "GitHub Token                      : ''...'"
           echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
           echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
           echo "::endgroup::"
@@ -221,6 +220,7 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
+          echo "Azure Creds                       : '***'" # ${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
           echo "Azure Resource Location 0         : '${{inputs.AZURE_LOCATION_ID_0}}'"
           echo "Azure Resource Location 1         : '${{inputs.AZURE_LOCATION_ID_1}}'"
           echo "Azure Resource Location 2         : '${{inputs.AZURE_LOCATION_ID_2}}'"
