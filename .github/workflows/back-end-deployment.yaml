@@ -11,6 +11,15 @@ on:
       foo:
         required: true
         type: string
+      PROJECT_NAME:
+        required: true
+        type: string
+      PROJECT_SERVICE:
+        required: false
+        type: string
+      PROJECT_DESCRIPTION:
+        required: false
+        type: string
 
 env:
   # ======================================================================
@@ -58,7 +67,14 @@ jobs:
       bar: baz
     steps:
       # ==================================================
-      - name: "01: Explanations"
+      - name: "B.01: Description"
+        run: |
+          echo "::group::Purpose"
+          echo "Deploys the infrastructure for supporting"
+          echo "the back end of a service."
+          echo "::endgroup::"
+    # ==================================================
+      - name: "B.02: Explanations"
         run: |
           echo "::group::Purpose"
           echo "At a high level, it is to develop"
@@ -89,6 +105,9 @@ jobs:
           echo "  has sufficient rights to use CodeFirst to create a Db schema."
           echo "- Backups are developed to store the db data to the Storage Account for 31 days."
           echo "::endgroup::"
+    # ==================================================
+      - name: "B.03: Details"
+        run: |
           echo "::group::Infrastructure Details"
           echo "As for individual component purpose and settings:"
           echo "- Sql Server:"
@@ -133,7 +152,7 @@ jobs:
           echo "::endgroup::"
       # ==================================================
       # For debugging/understanding.
-      - name: "01: Summarise Context Before Starting"
+      - name: "B.11: Summarise Context Before Starting"
         run: |
           echo "::group::Initiation Information"
           echo "Actor                             : ${{github.actor}}"
@@ -141,12 +160,12 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Repo Information"
-          echo "Repo                              : ${{github.repository}}"
-          echo "Repo Owner                        : ${{github.owner}}"
+          echo "Repo                              : '${{github.repository}}'"
+          echo "Repo Owner                        : '${{github.owner}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Runner Information"
-          echo "Workspace                         : ${{github.Workspace}}"
+          echo "Workspace                         : '${{github.Workspace}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Project Vars"
@@ -188,7 +207,7 @@ jobs:
       # Checkout code from *this* repo
       # onto runner (not target SWA...)
       # without giving directory, so default:
-      - name: "03: Checkout this Project's Repo"
+      - name: "B.12: Checkout this Project's Repo"
         uses: actions/checkout@v4
         # Optional to specify 'repository' or 'path'
         # with:
@@ -196,37 +215,32 @@ jobs:
         #  path: ${{env.SRC_REPO_RELATIVE_DEPLOYMENT_DIR}}
       # ==================================================
       # Login to Azure, in order to manipulate remote resources
-      - name: "04: Azure Login, using Action, to enable building resources"
+      - name: "B.13: Azure Login, using Action, to enable building resources"
         uses: azure/login@v2
         with:
           creds: ${{ secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}
       # ==================================================
       # Checkout code from *lib* repo
       # to a directory parallel to this repo's code
-      - name: "05: Checkout Library Repo"
+      - name: "B.14: Checkout Library Repo"
         uses: actions/checkout@v4
         with:
           repository: "skysgh/resources.deployments.lib"
           path: ${{ env.LIB_REPO_DEPLOYMENT_DIR }}
       # ==================================================
-      - name: "06: Summarise Lib Contents"
+      - name: "B.15: Summarise Lib Contents"
         run: |
           echo "::group::Run Context"
-          echo "Current Directory:"
-          echo "$GITHUB_WORKSPACE:"               : ${{github.env}}
+          echo "$GITHUB_WORKSPACE                 : '${{github.env}}'"
           pwd
+          echo "Lib  Folder                       :'${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
           echo "Target Lib File:"
           ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
-          echo "::endgroup::"
-          echo  
-          echo "::group::Run Context (Extended Info)"
-          echo "Lib  Folder:"
-          tree "${{env.LIB_REPO_DEPLOYMENT_DIR}}"
           echo "::endgroup::"
           echo 
 
       # ==================================================
-      - name: "07: Run main bicep file (${{env.PROJECT_DESCRIPTION}})"
+      - name: "B.15: Run main bicep file (${{env.PROJECT_DESCRIPTION}})"
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
