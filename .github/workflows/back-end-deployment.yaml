@@ -36,7 +36,31 @@ on:
       SRC_REPO_SOURCE_ENTRY_FOLDER:
         required: true
         type: string
-
+      # ======================================================================
+      # AZURE VARIABLES
+      # ======================================================================
+      AZURE_LOCATION_ID_0:
+        required: true
+        type: string
+      AZURE_LOCATION_ID_1:
+        required: true
+        type: string
+      AZURE_LOCATION_ID_2:
+        required: true
+        type: string
+      AZURE_LOCATION_ID_3:
+        required: true
+        type: string
+    secrets:
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_ENTRA_APP_CLIENT_CREDS:
+        required: true
+      DB_ADMIN_NAME:
+        required: true
+      DB_ADMIN_PWD:
+        required: true
+        
 env:
   # ======================================================================
   # LIB VARIABLES
@@ -167,15 +191,9 @@ jobs:
           echo "Workspace                         : '${{github.Workspace}}'"
           echo "::endgroup::"
           echo ""
-          echo "::group::Project Vars"
-          echo "Project Name                      : '${{inputs.PROJECT_NAME}}'"
-          echo "Project Service                   : '${{inputs.PROJECT_SERVICE_NAME}}'"
-          echo "Project Description               : '${{inputs.PROJECT_DESCRIPTION}}'"
-          echo "::endgroup::"
-          echo ""
           echo "::group::Dependencies (Injected Variables & Secrets)"
           echo "GitHub Token                      : ..."
-          echo "Azure Creds                       : '${{secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}'"
+          echo "Azure Creds                       : '${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}'"
           echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
           echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
           echo "::endgroup::"
@@ -187,6 +205,12 @@ jobs:
           echo "Lib Repo Bicep FileName           : '${{env.LIB_REPO_MAIN_BICEP_FILE}}'"
           echo "::endgroup::"
           echo ""
+          echo "::group::Project Vars"
+          echo "Project Name                      : '${{inputs.PROJECT_NAME}}'"
+          echo "Project Service                   : '${{inputs.PROJECT_SERVICE_NAME}}'"
+          echo "Project Description               : '${{inputs.PROJECT_DESCRIPTION}}'"
+          echo "::endgroup::"
+          echo ""
           echo "::group::Project Repo Variables"
           echo "Project Repo GitHub UserName/Repo : ${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
           echo "Project Repo Branch               : '${{inputs.SRC_REPO_BRANCH}}'"
@@ -196,11 +220,11 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Azure Variables"
-          echo "Azure Subscription                : '${{secrets.NP_AZURE_SUBSCRIPTION_ID}}'"
-          echo "Azure Resource Location 0         : '${{vars.AZURE_LOCATION_ID_0}}'"
-          echo "Azure Resource Location 1         : '${{vars.AZURE_LOCATION_ID_1}}'"
-          echo "Azure Resource Location 2         : '${{vars.AZURE_LOCATION_ID_2}}'"
-          echo "Azure Resource Location 3         : '${{vars.AZURE_LOCATION_ID_3}}'"
+          echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
+          echo "Azure Resource Location 0         : '${{inputs.AZURE_LOCATION_ID_0}}'"
+          echo "Azure Resource Location 1         : '${{inputs.AZURE_LOCATION_ID_1}}'"
+          echo "Azure Resource Location 2         : '${{inputs.AZURE_LOCATION_ID_2}}'"
+          echo "Azure Resource Location 3         : '${{inputs.AZURE_LOCATION_ID_3}}'"
           echo "::endgroup::"
       # ==================================================
       # Checkout code from *this* repo
@@ -217,7 +241,7 @@ jobs:
       - name: "B.13: Azure Login, using Action, to enable building resources"
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.NP_AZURE_ENTRA_APP_CLIENT_CREDS}}
+          creds: ${{ secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
       # ==================================================
       # Checkout code from *lib* repo
       # to a directory parallel to this repo's code
@@ -244,7 +268,7 @@ jobs:
         with:
           scope: subscription
           region: ${{ vars.AZURE_LOCATION_ID_2 }}
-          subscriptionId: ${{ secrets.NP_AZURE_SUBSCRIPTION_ID }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           
           #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
@@ -263,9 +287,9 @@ jobs:
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
             environmentId="NP"
-            defaultResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
-            logicResourceGroupLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
-            webServerFarmsResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"  
+            defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
+            logicResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
+            webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"  
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
@@ -274,14 +298,14 @@ jobs:
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
             webSitesSourceControlsRepositorySourceLocation="/"
-            dataResourceGroupLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
-            sqlServerResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            dataResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
+            sqlServerResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
             sqlServerMinimalTlsVersion="1.2"
             sqlServerIdentityType="None"
             sqlServerAdminUserName="${{secrets.DB_ADMIN_NAME}}"
             sqlServerAdminPassword="${{secrets.DB_ADMIN_PWD}}"
             sqlServerDbResourceName="Default"
-            sqlServerDbResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
+            sqlServerDbResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
             sqlServerDbResourceSKU="S1"
             sqlServerDbResourceTier="Standard"
             sqlServerDbAvailabilityZone="NoPreference"
