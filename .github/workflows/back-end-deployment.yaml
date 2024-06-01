@@ -154,8 +154,8 @@ jobs:
       - name: "B.11: Summarise Context Before Starting"
         run: |
           echo "::group::Initiation Information"
-          echo "Actor                             : ${{github.actor}}"
-          echo "Event                             : ${{github.event_name}}"
+          echo "Actor                             : '${{github.actor}}'"
+          echo "Event                             : '${{github.event_name}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Repo Information"
