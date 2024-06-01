@@ -21,6 +21,9 @@ on:
       PROJECT_SERVICE_NAME:
         required: false
         type: string
+      PROJECT_ENVIRONMENT_ID:
+        required: true
+        type: string
       PROJECT_DESCRIPTION:
         required: false
         type: string
@@ -184,17 +187,11 @@ jobs:
           echo ""
           echo "::group::Repo Information"
           echo "Repo                              : '${{github.repository}}'"
-          echo "Repo Owner                        : '${{github.owner}}'"
+          echo "Repo Owner                        : '${{github.repository_owner}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Runner Information"
-          echo "Workspace                         : '${{github.Workspace}}'"
-          echo "::endgroup::"
-          echo ""
-          echo "::group::Dependencies (Injected Variables & Secrets)"
-          echo "GitHub Token                      : ''...'"
-          echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
-          echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
+          echo "Workspace                         : '${{github.workspace}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Lib Variables"
@@ -214,7 +211,7 @@ jobs:
           echo "Project Repo GitHub UserName/Repo : ${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
           echo "Project Repo Branch               : '${{inputs.SRC_REPO_BRANCH}}'"
           echo "Project Repo Local Relative Dir   : '/'"
-          echo "Proejct Repo Src Directory        : '${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}'"
+          echo "Project Repo Src Directory        : '${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}'"
           echo "Porject Repo Src FileName         : n/a"
           echo "::endgroup::"
           echo ""
@@ -226,11 +223,28 @@ jobs:
           echo "Azure Resource Location 2         : '${{inputs.AZURE_LOCATION_ID_2}}'"
           echo "Azure Resource Location 3         : '${{inputs.AZURE_LOCATION_ID_3}}'"
           echo "::endgroup::"
+          echo ""
+          echo "::group::Azure Variables"
+          echo "GitHub Token                      : ''...'"
+          echo "::endgroup::"
+
+      # ==================================================
+      # For debugging/understanding.
+      - name: "B.12: Summarise *Specific* Context Before Starting"
+        run: |
+          echo "::group::Dependencies (Injected Variables & Secrets)"
+          echo "sqlServerAdminUserName            : '${{secrets.DB_ADMIN_NAME}}'"
+          echo "sqlServerAdminPassword            : '${{secrets.DB_ADMIN_PWD}}'"
+          echo "::endgroup::"
+      # ==================================================
+      # ==================================================
+      # ==================================================
+
       # ==================================================
       # Checkout code from *this* repo
       # onto runner (not target SWA...)
       # without giving directory, so default:
-      - name: "B.12: Checkout this Project's Repo"
+      - name: "B.21: Checkout this Project's Repo"
         uses: actions/checkout@v4
         # Optional to specify 'repository' or 'path'
         # with:
@@ -238,20 +252,20 @@ jobs:
         #  path: '/'
       # ==================================================
       # Login to Azure, in order to manipulate remote resources
-      - name: "B.13: Azure Login, using Action, to enable building resources"
+      - name: "B.22: Azure Login, using Action, to enable building resources"
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
       # ==================================================
       # Checkout code from *lib* repo
       # to a directory parallel to this repo's code
-      - name: "B.14: Checkout Library Repo"
+      - name: "B.23: Checkout Library Repo"
         uses: actions/checkout@v4
         with:
           repository: "skysgh/resources.deployments.lib"
           path: ${{ env.LIB_REPO_DEPLOYMENT_DIR }}
       # ==================================================
-      - name: "B.15: Summarise Lib Contents"
+      - name: "B.24: Summarise Lib Contents"
         run: |
           echo "::group::Run Context"
           echo "$GITHUB_WORKSPACE                 : '${{github.env}}'"
@@ -263,7 +277,7 @@ jobs:
           echo 
 
       # ==================================================
-      - name: "B.15: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
+      - name: "B.31: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
