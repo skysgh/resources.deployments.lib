@@ -8,37 +8,36 @@ on:
   # define optional and requierd inputs
   # required from caller: 
     inputs:
-      foo:
-        required: true
-        type: string
+      # ======================================================================
+      # PROJECT VARIABLES
+      # ======================================================================
+      # The project name, which informs naming of 
+      # Azure resource groups and resource names 
+      # definately changes per project.
+      # Note: it could be set here, or come from GitHUb repo vars:
       PROJECT_NAME:
         required: true
         type: string
-      PROJECT_SERVICE:
+      PROJECT_SERVICE_NAME:
         required: false
         type: string
       PROJECT_DESCRIPTION:
         required: false
         type: string
+      # ======================================================================
+      # SRC VARIABLES
+      # ======================================================================
+      SRC_REPO_GITHUB_USER_AND_REPO_NAME:
+        required: true
+        type: string
+      SRC_REPO_BRANCH:
+        required: true
+        type: string
+      SRC_REPO_SOURCE_ENTRY_FOLDER:
+        required: true
+        type: string
 
 env:
-  # ======================================================================
-  # PROJECT VARIABLES
-  # ======================================================================
-  # The project name, which informs naming of 
-  # Azure resource groups and resource names 
-  # definately changes per project.
-  # Note: it could be set here, or come from GitHUb repo vars:
-  # Provided by invoker: PROJECT_NAME: '...'
-  # Provided by invoker: PROJECT_SERVICE_NAME: '...'
-  # Provided by invoker: PROJECT_DESCRIPTION: '...'
-  # ======================================================================
-  # SRC VARIABLES
-  # ======================================================================
-  # Provided by Invoker: SRC_REPO_GITHUB_USER_AND_REPO_NAME: ...
-  # Provided by invoker: SRC_REPO_BRANCH: main
-  # Provided by invoker: SRC_REPO_ENTRY_FOLDER: "/"
-  # Provided by invoker: SRC_REPO_RELATIVE_DEPLOYMENT_DIR: "/"
   # ======================================================================
   # LIB VARIABLES
   # ======================================================================
@@ -50,8 +49,8 @@ env:
   # and the folder to find the above script in:
   LIB_REPO_GITHUB_USER_AND_REPO_NAME: 'skysgh/resources.deployments.lib'
   LIB_REPO_BRANCH: main
-  LIB_REPO_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
-  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
+  LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
+  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
   # ======================================================================
 
 
@@ -169,9 +168,9 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Project Vars"
-          echo "Project Name                      : '${{env.PROJECT_NAME}}'"
-          echo "Project Service                   : '${{env.PROJECT_SERVICE_NAME}}'"
-          echo "Project Description               : '${{env.PROJECT_DESCRIPTION}}'"
+          echo "Project Name                      : '${{inputs.PROJECT_NAME}}'"
+          echo "Project Service                   : '${{inputs.PROJECT_SERVICE_NAME}}'"
+          echo "Project Description               : '${{inputs.PROJECT_DESCRIPTION}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Dependencies (Injected Variables & Secrets)"
@@ -184,15 +183,15 @@ jobs:
           echo "::group::Lib Variables"
           echo "Lib Repo GitHub UserName/Repo     : '${{env.LIB_REPO_GITHUB_USER_AND_REPO_NAME}}'"
           echo "Lib Repo Local Relative Dir       : '${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
-          echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_REPO_ENTRY_FOLDER}}'"
+          echo "Lib Repo Bicep Recipe Directory   : '${{env.LIB_REPO_SOURCE_ENTRY_FOLDER}}'"
           echo "Lib Repo Bicep FileName           : '${{env.LIB_REPO_MAIN_BICEP_FILE}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Project Repo Variables"
-          echo "Project Repo GitHub UserName/Repo : ..."
-          echo "Project Repo Branch               : '${{env.SRC_REPO_BRANCH}}'"
-          echo "Project Repo Local Relative Dir   : '${{env.SRC_REPO_RELATIVE_DEPLOYMENT_DIR}}'"
-          echo "Proejct Repo Src Directory        : '${{env.SRC_REPO_ENTRY_FOLDER}}'"
+          echo "Project Repo GitHub UserName/Repo : ${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
+          echo "Project Repo Branch               : '${{inputs.SRC_REPO_BRANCH}}'"
+          echo "Project Repo Local Relative Dir   : '/'"
+          echo "Proejct Repo Src Directory        : '${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}'"
           echo "Porject Repo Src FileName         : n/a"
           echo "::endgroup::"
           echo ""
@@ -211,8 +210,8 @@ jobs:
         uses: actions/checkout@v4
         # Optional to specify 'repository' or 'path'
         # with:
-        #  repository: ${{env.THIS_REPO}}
-        #  path: ${{env.SRC_REPO_RELATIVE_DEPLOYMENT_DIR}}
+        #  repository: ...THIS_REPO...
+        #  path: '/'
       # ==================================================
       # Login to Azure, in order to manipulate remote resources
       - name: "B.13: Azure Login, using Action, to enable building resources"
@@ -235,12 +234,12 @@ jobs:
           pwd
           echo "Lib  Folder                       :'${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
           echo "Target Lib File:"
-          ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
+          ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           echo "::endgroup::"
           echo 
 
       # ==================================================
-      - name: "B.15: Run main bicep file (${{env.PROJECT_DESCRIPTION}})"
+      - name: "B.15: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
@@ -248,7 +247,7 @@ jobs:
           subscriptionId: ${{ secrets.NP_AZURE_SUBSCRIPTION_ID }}
           
           #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
-          template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
+          template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
 
           # Consider: sqlServerDbResourxeLocationId: 'F1','D1','B1','B2','S1','S2'
           # Consider: sqlServerDbResourceSKU: 'Basic', 'S0', 'S1', 'S2'
@@ -261,8 +260,8 @@ jobs:
           
           parameters: >
             buildResourceGroup=true
-            projectName="${{ env.PROJECT_NAME }}"
-            projectServiceName="${{ env.PROJECT_SERVICE_NAME }}"
+            projectName="${{ inputs.PROJECT_NAME }}"
+            projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
             environmentId="NP"
             defaultResourceLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
             logicResourceGroupLocationId="${{ vars.AZURE_LOCATION_ID_2 }}"
