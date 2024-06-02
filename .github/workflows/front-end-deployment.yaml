@@ -67,7 +67,8 @@ on:
       AZURE_ENTRA_APP_CLIENT_CREDS:
         required: true
 env:
- 
+  # env always expect at least one entry.
+  foo: bar
 # Running on one runner:      
 jobs:
   reusable_workflow_job:
