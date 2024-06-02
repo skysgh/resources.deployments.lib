@@ -104,7 +104,7 @@ jobs:
           echo "Deploys the infrastructure for supporting"
           echo "the service client."
           echo "::endgroup::"
-    # ==================================================
+      # ==================================================
       - name: "B.02: Explanations"
         run: |
           echo "::group::Purpose"
@@ -112,7 +112,7 @@ jobs:
           echo "the backend infrastructure needed for"
           echo "WWW accessible services."
           echo "::endgroup::"
-    # ==================================================
+      # ==================================================
       - name: "B.03: Details"
         run: |
           echo "::group::Infrastructure Details"
@@ -184,10 +184,6 @@ jobs:
           echo "::endgroup::"          
 
       # ==================================================
-      # ==================================================
-      # ==================================================
-
-      # ==================================================
       # Checkout code from *this* repo
       # onto runner (not target SWA...)
       # without giving directory, so default:
@@ -195,8 +191,8 @@ jobs:
         uses: actions/checkout@v4
         # Optional to specify 'repository' or 'path'
         # with:
-        #  repository: ...THIS_REPO...
-        #  path: '/'
+        #  repository: ...THIS_REPO...# ${{ github.repository }}
+        #  path: '/'  # ${{ github.ref }}
       # ==================================================
       # Login to Azure, in order to manipulate remote resources
       - name: "B.22: Azure Login, using Action, to enable building resources"
