@@ -80,7 +80,7 @@ jobs:
       # ======================================================================
       # The file invoked changes per project/service/tier:
       # As do the parameters (at bottom) that are supplied.
-      LIB_REPO_MAIN_BICEP_FILE: "web-static-app-deployment.bicep"
+      LIB_REPO_MAIN_BICEP_FILE: "front-end-deployment.bicep"
       # Whereas these vars probably don't change project to project,
       # which define where to download lib files from, the dir to deploy to here
       # and the folder to find the above script in:

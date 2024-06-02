@@ -53,18 +53,20 @@
 // Sql Storage Backup
 //
 // ======================================================================
-// Properties: Required
+// Properties: Required: Secrets
 // ======================================================================
 // The Github repo has at least two secrets (Db Admin User Name/pwd)
+// - sqlServerAdminUserName
+// - sqlServerAdminPassword
 //
+// ======================================================================
+// Properties: Required: Variables
+// ======================================================================
 // The following are required:
 // - projectName
 // - projectServiceName
 // - environmentId
 // - defaultResourceLocationId
-// - sqlServerAdminUserName
-// - sqlServerAdminPassword
-//
 //
 // ======================================================================
 // Properties: Pricing

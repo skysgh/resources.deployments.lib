@@ -15,7 +15,7 @@ var sharedSettings = loadJsonContent('../settings/shared.json')
 // ======================================================================
 // Parent Resource Group  
 // ======================================================================
-@description('The name of the resource group in which to create these resources. ')
+@description('The name of the parent resource group in which to create these resources. ')
 @minLength(3)
 param resourceGroupName string
 
@@ -54,14 +54,14 @@ param webServerFarmsResourceName string = toLower(defaultResourceName)
 
 @description('The location of the serverFarm.')
 // @allowed(...too long...)
-param webServerFarmsResourceLocationId string  = defaultResourceLocationId 
+param webServerFarmsResourceLocationId string  = toLower(defaultResourceLocationId) 
 
 @description('The web app service plan SKU. Options are: F1,D1,B1,B2,S1,S2. Default: D1 (as F1 can only be used once, and hence needs monitoring).')
 @allowed(['F1','D1','B1','B2','S1','S2'])
 param webServerFarmsResourceSKU string = 'D1'
 
 @description('The tags for this resource.')
-param webServerFarmsResourceTags object = {}
+param webServerFarmsResourceTags object = defaultResourceTags
 // ======================================================================
 // Params: Sites 
 // ======================================================================
@@ -69,10 +69,10 @@ param webServerFarmsResourceTags object = {}
 param webSitesResourceName string = toLower(defaultResourceName)
 
 @description('The location of the site. Default is same as server farm.')
-param webSitesResourceLocationId string = webServerFarmsResourceLocationId
+param webSitesResourceLocationId string = toLower(webServerFarmsResourceLocationId)
 
 @description('The tags for this resource.')
-param webSitesResourceTags object = {}
+param webSitesResourceTags object = defaultResourceTags
 
 @description('Whether to only allow https. Should be true.')
 param webSitesHttpOnly bool = true
@@ -95,7 +95,7 @@ param webSitesSourceControlsResourceName string = toLower(webSitesResourceName)
 param webSitesSourceControlsResourceLocationId string = toLower(webSitesResourceLocationId)
 
 @description('The tags for this resource.')
-param webSitesSourceControlsResourceTags object = {}
+param webSitesSourceControlsResourceTags object = defaultResourceTags
 
 @description('The url to the repository to be deployed to the Server. Default is empty string (\'\'). ')
 param webSitesSourceControlsRepositoryUrl string = ''
