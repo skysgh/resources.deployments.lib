@@ -275,7 +275,7 @@ jobs:
       # ==================================================
       # template: "${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
       #resourceGroupName: ${{ env.RG_NAME }}
-      - name: "B:31: Run main bicep file (creating RG & SWA)""
+      - name: "B:31: Run main bicep file (creating RG & SWA)"
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
