@@ -66,10 +66,6 @@ on:
         required: true
       AZURE_ENTRA_APP_CLIENT_CREDS:
         required: true
-      DB_ADMIN_NAME:
-        required: true
-      DB_ADMIN_PWD:
-        required: true
 env:
  
 # Running on one runner:      
