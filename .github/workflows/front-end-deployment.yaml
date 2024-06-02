@@ -120,6 +120,7 @@ jobs:
       # ==================================================
       # For debugging/understanding.
       - name: "B.11: Summarise Context Before Starting"
+        # Showing too much, remove: ${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
         run: |
           echo "::group::Initiation Information"
           echo "Actor                             : '${{github.actor}}'"
@@ -158,7 +159,7 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{inputs.AZURE_SUBSCRIPTION_ID}}'"
-          echo "Azure Creds                       : '***'" # Showing too much, remove: ${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
+          echo "Azure Creds                       : '***'" 
           echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "Azure Resource Location Alt       : '${{inputs.AZURE_LOCATION_ID_SWA}}'"
           echo "::endgroup::"
