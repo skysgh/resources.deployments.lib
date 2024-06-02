@@ -274,15 +274,15 @@ jobs:
 
 
       # ==================================================
+      # template: "${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
+      #resourceGroupName: ${{ env.RG_NAME }}
       - name: "B:31: Run main bicep file (creating RG & SWA)""
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
           region: ${{ inputs.AZURE_LOCATION_ID }}
           subscriptionId: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
-          #resourceGroupName: ${{ env.RG_NAME }}
-          
-          template: "${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
+          template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           parameters: >
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
