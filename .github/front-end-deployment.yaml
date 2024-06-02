@@ -1,5 +1,6 @@
 name: Build and Deploy to SWA Environment
 
+
 # Triggers, on specific branches
 on:
   # marks it as a callee workflow:
