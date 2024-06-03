@@ -147,7 +147,7 @@ param defaultResourceTags object = { project: projectName, environment: environm
 param logicTierResourceGroupName string = 'LOGIC'
 
 @description('The upper case Name of the Resource Group in whch these resources are built. Recommend it be the default, which is the upperCase of \'projectName-serviceName-envId\'.')
-param logicResourceGroupName string = replace( toUpper('${projectName}-${projectServiceName}-${environmentId}-${logicTierResourceGroupName}'),'--','-')
+param logicResourceGroupName string = replace( toUpper('${projectName}-${environmentId}-${projectServiceName}-${logicTierResourceGroupName}'),'--','-')
 
 @description('The Location Id of the Resource Group.')
 //TooManyOptions @allowed(['australiacentral'])

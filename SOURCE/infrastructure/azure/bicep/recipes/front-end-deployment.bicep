@@ -125,7 +125,7 @@ param defaultResourceTags object = { project: projectName, environment: environm
 param clientTierResourceGroupName string = 'CLIENT'
 
 @description('The upper case Name of the Resource Group in whch these resources are built. Recommend it be the default, which is the upperCase of \'projectName-serviceName-envId\'.')
-param clientResourceGroupName string = replace( toUpper('${projectName}-${projectServiceName}-${environmentId}-${clientTierResourceGroupName}'),'--','-')
+param clientResourceGroupName string = replace( toUpper('${projectName}-${environmentId}-${projectServiceName}-${clientTierResourceGroupName}'),'--','-')
 
 @description('The Location Id of the Resource Group.')
 //TooManyOptions @allowed(['australiacentral'])
