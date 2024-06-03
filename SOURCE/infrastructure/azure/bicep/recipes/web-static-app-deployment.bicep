@@ -166,4 +166,5 @@ output swaUrl string = swaModule.outputs.resourceUrl
 output repositorySummary string = '${swaRepositoryUrl}-${swaRepositoryBranch}'
 
 // param sink (to not cause error if param is not used):
-output _ bool = startsWith('${sharedSettings.version}-${resourceGroupName}-${swaRepositoryToken}-${buildResourceGroup}', '.')
+// removed: ${swaRepositoryToken}
+output _ bool = startsWith('${sharedSettings.version}-${resourceGroupName}-${buildResourceGroup}', '.')

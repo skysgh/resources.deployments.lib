@@ -175,7 +175,7 @@ output resourceId string = resource.id
 // return the (short) name of the newly created resource:
 output resourceName string = resource.name
 // param sink (to not cause error if param is not used):
-output _ bool = startsWith(concat('${sharedSettings.version}-${repositoryUrl}-${repositoryBranch}'), '.')
+output _ bool = startsWith(concat('${sharedSettings.version}-${repositoryUrl}-${repositoryBranch}--${__}'), '.')
 
 // Url to website where it is deployed:
 // can be accessed from a parent module invoking this module using:

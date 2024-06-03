@@ -158,7 +158,7 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Azure Variables"
-          echo "Azure Subscription                : '${{inputs.AZURE_SUBSCRIPTION_ID}}'"
+          echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
           echo "Azure Creds                       : '***'" 
           echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "Azure Resource Location Alt       : '${{inputs.AZURE_LOCATION_ID_SWA}}'"
@@ -263,7 +263,7 @@ jobs:
 #        with:
 #          scope: subscription
 #          region: ${{ inputs.AZURE_LOCATION_ID }}
-#          subscriptionId: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+#          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 #          #resourceGroupName: ${{ env.RG_NAME }}
 #          template: "${{LIB_REPO_SOURCE_ENTRY_FOLDER}}/resource-group.bicep"
 #          parameters: ""
@@ -278,19 +278,19 @@ jobs:
         with:
           scope: subscription
           region: ${{ inputs.AZURE_LOCATION_ID }}
-          subscriptionId: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           parameters: >
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
             environmentId="${{ inputs.PROJECT_ENVIRONMENT_ID}}"
-            groupResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
+            clientTierResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             swaResourceLocationId="${{ inputs.AZURE_LOCATION_ID_SWA }}" 
-            repositoryUrl="${{ env.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
-            repositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
-            appLocation="${{ env.SRC_REPO_SOURCE_ENTRY_FOLDER }}"
-            appBuildCommand="${{ inputs.SWA_ANGULAR_BUILD_COMMAND }}"  
-            outputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"
+            swaRepositoryUrl="${{ inputs.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
+            swaRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
+            swaAppLocation="${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}"
+            swaAppBuildCommand="${{ inputs.SWA_ANGULAR_BUILD_COMMAND }}"  
+            swaOutputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"
           failOnStdErr: false
       # ==================================================
       - name: "B:32: Post Static Web App (SWA) Deployment - get API key for deployment and URL"
@@ -321,7 +321,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: '${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}' # App source code path
           api_build_command: '${{inputs.SWA_ANGULAR_BUILD_COMMAND}}'
-          output_location: 'dist/${{env.SWA_ANGULAR_PROJECT_NAME}}' 
+          output_location: 'dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}' 
           # api_location: '' # Api source code path - optional
       # ==================================================
       # NEXT STEPS:
