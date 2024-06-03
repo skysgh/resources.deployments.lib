@@ -1,5 +1,4 @@
-name: Build and Deploy to SWA Environment
-
+name: Build Frontend (SWA, Deployment, etc.)
 
 # Triggers, on specific branches
 on:
@@ -45,10 +44,10 @@ on:
       # ======================================================================
       # SWA VARIABLES
       # ======================================================================
-      SWA_ANGULAR_PROJECT_NAME: #'base'
+      SWA_ANGULAR_PROJECT_NAME: #"base"
         required: true
         type: string
-      SWA_ANGULAR_BUILD_COMMAND: #'npm install && npm run build'
+      SWA_ANGULAR_BUILD_COMMAND: #"npm install && npm run build"
         required: true
         type: string
       # ======================================================================
@@ -61,39 +60,40 @@ on:
         required: true
         type: string
     secrets:
-      # PAT expires Expires on Tue, Dec 31 2024.
+      # AZURE:
       AZURE_SUBSCRIPTION_ID:
         required: true
       AZURE_ENTRA_APP_CLIENT_CREDS:
         required: true
+      # GITHUB:
+      GH_PAT:
+        required: true
 env:
-  # env always expect at least one entry.
-  foo: bar
-# Running on one runner:      
+  # ======================================================================
+  # LIB VARIABLES
+  # ======================================================================
+  # The file invoked changes per project/service/tier:
+  # As do the parameters (at bottom) that are supplied.
+  LIB_REPO_MAIN_BICEP_FILE: "front-end-deployment.bicep"
+  # Whereas these vars probably don't change project to project,
+  # which define where to download lib files from, the dir to deploy to here
+  # and the folder to find the above script in:
+  LIB_REPO_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
+  LIB_REPO_BRANCH: "main"
+  LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
+  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
+
+
+# Running on one runner:
 jobs:
   reusable_workflow_job:
     runs-on: ubuntu-latest
-    environment: NP
+    environment: "NP"
     env:
-      # ======================================================================
-      # LIB VARIABLES
-      # ======================================================================
-      # The file invoked changes per project/service/tier:
-      # As do the parameters (at bottom) that are supplied.
-      LIB_REPO_MAIN_BICEP_FILE: "front-end-deployment.bicep"
-      # Whereas these vars probably don't change project to project,
-      # which define where to download lib files from, the dir to deploy to here
-      # and the folder to find the above script in:
-      LIB_REPO_GITHUB_USER_AND_REPO_NAME: 'skysgh/resources.deployments.lib'
-      LIB_REPO_BRANCH: main
-      LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
-      LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
-      # ======================================================================
-      
       # DEFINE REPO CONSTANTS
       NODE_VERSION: 20.11.0
       # ACTIONS_STEP_DEBUG: 'true' 
-      ACTIONS_RUNNER_DEBUG: 'true' 
+      ACTIONS_RUNNER_DEBUG: "true"
     steps:
       # ==================================================
       - name: "B.01: Description"
@@ -165,17 +165,14 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "::group::Azure Variables"
-          echo "GitHub Token                      : ''...'"
+          echo "GitHUb Token                      : '${{secrets.GITHUB_TOKEN}}'"
+          echo "PAT                               : '${{secrets.GH_PAT}}'"
           echo "::endgroup::"
 
       # ==================================================
       # For debugging/understanding.
       - name: "B.12: Summarise *Specific* Context Before Starting"
         run: |
-          echo "::group::GitHub Accsss Tokens"
-          echo "Token................: '${{secrets.GITHUB_TOKEN}}'"
-          echo "PAT..................: '${{secrets.GH_BASE_CLIENT_THEMED}}'"
-          echo "::endgroup::"   
           echo ""
           echo "::group::SWA"
           echo "SWA Project Name.....: '${{inputs.SWA_ANGULAR_PROJECT_NAME}}'"
@@ -288,7 +285,7 @@ jobs:
             clientResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             swaResourceLocationId="${{ inputs.AZURE_LOCATION_ID_SWA }}" 
             swaRepositoryUrl="${{ inputs.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
-            swaRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
+            swaRepositoryToken="${{ secrets.GH_PAT }}"
             swaAppLocation="${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}"
             swaAppBuildCommand="${{ inputs.SWA_ANGULAR_BUILD_COMMAND }}"  
             swaOutputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"

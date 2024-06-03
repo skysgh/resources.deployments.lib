@@ -1,5 +1,4 @@
-name: Deploy to Environment
-
+name: Build Back End Environment (AS, SQL Server, DB, etc.)
 
 # Triggers, on specific branches
 on:
@@ -42,19 +41,12 @@ on:
       # ======================================================================
       # AZURE VARIABLES
       # ======================================================================
-      AZURE_LOCATION_ID_0:
-        required: true
-        type: string
-      AZURE_LOCATION_ID_1:
-        required: true
-        type: string
-      AZURE_LOCATION_ID_2:
-        required: true
-        type: string
-      AZURE_LOCATION_ID_3:
+      AZURE_LOCATION_ID:
         required: true
         type: string
     secrets:
+      #GITHUB_TOKEN:
+      #  required: true
       AZURE_SUBSCRIPTION_ID:
         required: true
       AZURE_ENTRA_APP_CLIENT_CREDS:
@@ -74,7 +66,7 @@ env:
   # Whereas these vars probably don't change project to project,
   # which define where to download lib files from, the dir to deploy to here
   # and the folder to find the above script in:
-  LIB_REPO_GITHUB_USER_AND_REPO_NAME: 'skysgh/resources.deployments.lib'
+  LIB_REPO_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
   LIB_REPO_BRANCH: main
   LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
@@ -90,7 +82,10 @@ jobs:
     # TODO: make this changeable by branch/tag:
     environment: "NP"
     env:
-      bar: baz
+      # DEFINE REPO CONSTANTS
+      NODE_VERSION: 20.11.0
+      # ACTIONS_STEP_DEBUG: 'true' 
+      ACTIONS_RUNNER_DEBUG: "true"
     steps:
       # ==================================================
       - name: "B.01: Description"
@@ -218,10 +213,7 @@ jobs:
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
           echo "Azure Creds                       : '***'" # ${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
-          echo "Azure Resource Location 0         : '${{inputs.AZURE_LOCATION_ID_0}}'"
-          echo "Azure Resource Location 1         : '${{inputs.AZURE_LOCATION_ID_1}}'"
-          echo "Azure Resource Location 2         : '${{inputs.AZURE_LOCATION_ID_2}}'"
-          echo "Azure Resource Location 3         : '${{inputs.AZURE_LOCATION_ID_3}}'"
+          echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "::endgroup::"
           echo ""
           echo "::group::Azure Variables"
@@ -281,7 +273,7 @@ jobs:
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
-          region: ${{ vars.AZURE_LOCATION_ID_2 }}
+          region: ${{ vars.AZURE_LOCATION_ID }}
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           
           #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
@@ -301,9 +293,9 @@ jobs:
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
             environmentId="${{ inputs.PROJECT_ENVIRONMENT_ID}}"
-            defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
-            logicResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
-            webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"  
+            defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
+            logicResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
+            webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"  
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
@@ -312,14 +304,14 @@ jobs:
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
             webSitesSourceControlsRepositorySourceLocation="/"
-            dataResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
-            sqlServerResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
+            dataResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
+            sqlServerResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerMinimalTlsVersion="1.2"
             sqlServerIdentityType="None"
             sqlServerAdminUserName="${{secrets.DB_ADMIN_NAME}}"
             sqlServerAdminPassword="${{secrets.DB_ADMIN_PWD}}"
             sqlServerDbResourceName="Default"
-            sqlServerDbResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
+            sqlServerDbResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerDbResourceSKU="S1"
             sqlServerDbResourceTier="Standard"
             sqlServerDbAvailabilityZone="NoPreference"
