@@ -124,7 +124,6 @@ param swaOutputLocation string = ''
 // }
 
 
-var useDomainName =  (empty() https://icy-grass-00e2d1e00.5.azurestaticapps.net/
 
 module swaModule '../microsoft/web/staticsites.bicep' = if (buildResource) {
   //dependsOn: [rg1] // Specify a dependency on the rgModule
