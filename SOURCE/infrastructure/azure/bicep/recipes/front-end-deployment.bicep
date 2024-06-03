@@ -152,7 +152,7 @@ param swaResourceTags object = defaultResourceTags
 param swaResourceSKU string = 'Free'
 // ----------------------------------------------------------------------
 @description('Custom Domain.')
-param swaCustomDomain string = toLower( replace( replace(clientResourceGroupName,'--','-'),'-','.')) 
+param swaCustomDomain string = toLower()'https://${clientResourceGroupName}.5.azurestaticapps.net'
 // ----------------------------------------------------------------------
 @description('URL for the repository of the static site.')
 param swaRepositoryUrl string 
