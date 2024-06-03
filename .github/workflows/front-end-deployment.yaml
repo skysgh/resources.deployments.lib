@@ -178,9 +178,9 @@ jobs:
           echo "GH Token                          : '${{secrets.GH_TOKEN}}'"
           echo "(same as GitHub Token?)           : '${{secrets.GH_TOKEN == secrets.GITHUB_TOKEN}}'"
           echo "GH Repo Token                     : '${{secrets.GH_REPO_TOKEN}}'"
-          echo "(same as GitHub Token?)           : '${{secrets.GH_TOKEN == secrets.REPO_TOKEN}}'"
+          echo "(same as GitHub Token?)           : '${{secrets.GH_REPO_TOKEN == secrets.GITHUB_TOKEN}}'"
           echo "GH PAT                            : '${{secrets.GH_PAT}}'"
-          echo "(same as GitHub Token?)           : '${{secrets.GH_TOKEN == secrets.PAT}}'"
+          echo "(same as GitHub Token?)           : '${{secrets.GH_PAT == secrets.GITHUB_TOKEN}}'"
           echo "::endgroup::"
 
       # ==================================================
@@ -284,6 +284,7 @@ jobs:
       # ==================================================
       # template: "${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
       #resourceGroupName: ${{ env.RG_NAME }}
+      # IMPORTANT: swaRepositoryToken WAS GH_PAT.
       - name: "B:31: Run main bicep file (creating RG & SWA)"
         uses: azure/arm-deploy@v1
         with:
@@ -299,7 +300,7 @@ jobs:
             clientResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             swaResourceLocationId="${{ inputs.AZURE_LOCATION_ID_SWA }}" 
             swaRepositoryUrl="${{ inputs.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
-            swaRepositoryToken="${{ secrets.GH_PAT }}"
+            swaRepositoryToken="${{ secrets.GH_TOKEN }}"
             swaAppLocation="${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}"
             swaAppBuildCommand="${{ inputs.SWA_ANGULAR_BUILD_COMMAND }}"  
             swaOutputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"
