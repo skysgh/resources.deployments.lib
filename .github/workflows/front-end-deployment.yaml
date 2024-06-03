@@ -68,10 +68,15 @@ on:
       # GITHUB:
       GH_TOKEN:
         required: true
+      GH_REPO_TOKEN:
+        required: true
       GH_PAT:
         required: true
       # GITHUB_TOKEN:
       #  required: true
+
+
+
 env:
   # ======================================================================
   # LIB VARIABLES
@@ -171,6 +176,7 @@ jobs:
           echo "::group::Azure Variables"
           echo "GitHUb Token                      : '${{secrets.GITHUB_TOKEN}}'"
           echo "GH Token                          : '${{secrets.GH_TOKEN}}'"
+          echo "GH Repo Token                     : '${{secrets.GH_REPO_TOKEN}}'"
           echo "GH PAT                            : '${{secrets.GH_PAT}}'"
           echo "::endgroup::"
 
