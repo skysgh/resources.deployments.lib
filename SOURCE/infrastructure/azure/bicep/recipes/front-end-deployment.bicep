@@ -155,7 +155,7 @@ param swaResourceSKU string = 'Free'
 param swaDomainRegion string = '5' //swaResourceLocationId
 
 @description('Custom Domain.')
-param swaCustomDomain string = toLower('${clientResourceGroupName}.${swaDomainRegion}.azurestaticapps.net')
+param swaCustomDomain string = ''//toLower('${clientResourceGroupName}.${swaDomainRegion}.azurestaticapps.net')
 // ----------------------------------------------------------------------
 @description('URL for the repository of the static site.')
 param swaRepositoryUrl string 
