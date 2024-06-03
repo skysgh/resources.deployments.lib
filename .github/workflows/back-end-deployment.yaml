@@ -300,7 +300,7 @@ jobs:
             buildResourceGroup=true
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
-            environmentId="NP"
+            environmentId="${{ inputs.PROJECT_ENVIRONMENT_ID}}"
             defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
             logicResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"
             webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID_2 }}"  
