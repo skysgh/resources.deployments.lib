@@ -152,7 +152,7 @@ param swaResourceTags object = defaultResourceTags
 param swaResourceSKU string = 'Free'
 // ----------------------------------------------------------------------
 @description('Custom Domain Region. Default: 5')
-param swaDomainRegion string = swaResourceLocationId
+param swaDomainRegion string = '5' //swaResourceLocationId
 
 @description('Custom Domain.')
 param swaCustomDomain string = toLower('${clientResourceGroupName}.${swaDomainRegion}.azurestaticapps.net')
