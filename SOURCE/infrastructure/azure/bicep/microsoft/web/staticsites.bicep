@@ -43,6 +43,9 @@ param resourceSKU string = 'Free'
 // ======================================================================
 // Resource other Params
 // ======================================================================
+
+
+
 @description('The path to the app source code relative to the root of the repository. Probably sonmething like \'SRC/\' or similar.')
 param appLocation string = '/'
 
@@ -125,9 +128,11 @@ resource resource 'Microsoft.Web/staticSites@2022-09-01' = if (buildResource) {
   //  userAssignedIdentities: {}
   //}
   properties: {
+
+    
     // allowConfigFileUpdates: bool
     // Source Code Repository:
-     // provider: 'GitHub'
+    // provider: 'GitHub'
      repositoryUrl: repositoryUrl
      repositoryToken: repositoryToken
      branch: repositoryBranch
@@ -158,11 +163,20 @@ resource resource 'Microsoft.Web/staticSites@2022-09-01' = if (buildResource) {
     //  repositoryName: 'string'
     //  templateRepositoryUrl: 'string'
     // }
+    // Moved to its own template
+    // customDomains: empty(customDomain)? null : [
+    //   {
+    //     domainName: customDomain
+    //     validationMethod: 'cname'
+    //   }
+    // ]
 
     // access 
     publicNetworkAccess: 'Enabled'
   }
 }
+
+
 
 
 // ======================================================================

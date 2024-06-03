@@ -64,6 +64,9 @@ param swaResourceSKU string = 'Free'
 @description('The tags for this resource. ')
 param swaResourceTags object = defaultResourceTags
 // ----------------------------------------------------------------------
+@description('The domain name (or prefix) to give to the deployed SWA.')
+param swaCustomDomain string = ''
+// ----------------------------------------------------------------------
 @description('URL for the repository of the static site.')
 param swaRepositoryUrl string 
 
@@ -121,9 +124,11 @@ param swaOutputLocation string = ''
 // }
 
 
+var useDomainName =  (empty() https://icy-grass-00e2d1e00.5.azurestaticapps.net/
+
 module swaModule '../microsoft/web/staticsites.bicep' = if (buildResource) {
   //dependsOn: [rg1] // Specify a dependency on the rgModule
-  name:  '${deployment().name}_staticsites_module'
+  name:  '${deployment().name}_swa_module'
   scope: resourceGroup(resourceGroupName) 
   // scope: rgResourceId
   // scope: resourceGroup(subscription().id, rgModule.outputs.resourceId)
@@ -151,6 +156,22 @@ module swaModule '../microsoft/web/staticsites.bicep' = if (buildResource) {
     // Source Code (back end):
     apiLocation: swaApiLocation
     // --------------------------------------------------
+  }
+}
+
+
+
+module swaCustomDomainModule '../microsoft/web/staticsites.customdomains.bicep' = if (buildResource && !empty(swaCustomDomain)) {
+  //dependsOn: [rg1] // Specify a dependency on the rgModule
+  name:  '${deployment().name}_swa_cd_module'
+  scope: resourceGroup(resourceGroupName) 
+  // scope: rgResourceId
+  // scope: resourceGroup(subscription().id, rgModule.outputs.resourceId)
+  // alt way: scope: resourceGroup(rgModule.outputs.resourceName) // Specify the resource group as the scope
+  params: {
+    parentResourceName: toLower('${swaResourceName}${defaultResourceNameSuffix}')
+     resourceName:swaCustomDomain 
+     kind:'cname'
   }
 }
 

@@ -151,6 +151,9 @@ param swaResourceTags object = defaultResourceTags
 @allowed([ 'Free', 'Standard' ])
 param swaResourceSKU string = 'Free'
 // ----------------------------------------------------------------------
+@description('Custom Domain.')
+param swaCustomDomain string = toLower( replace( replace(clientResourceGroupName,'--','-'),'-','.')) 
+// ----------------------------------------------------------------------
 @description('URL for the repository of the static site.')
 param swaRepositoryUrl string 
 
@@ -214,6 +217,8 @@ module swaModule './web-static-app-deployment.bicep' = if (buildResource) {
     swaResourceName                                 : swaResourceName
     swaResourceLocationId                           : swaResourceLocationId
     swaResourceTags                                 : swaResourceTags 
+    // -----
+    swaCustomDomain                                 : swaCustomDomain 
     // -----
     swaResourceSKU                                  : swaResourceSKU 
     // -----
