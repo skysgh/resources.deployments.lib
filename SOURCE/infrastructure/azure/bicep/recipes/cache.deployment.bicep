@@ -141,7 +141,7 @@ resource redisCache 'Microsoft.Cache/redis@2023-08-01' = if (buildResource) {
   }
 }
 // ======================================================================
-resource redisCacheBuiltInAccessPolicyAssignment 'Microsoft.Cache/redis/accessPolicyAssignments@2023-08-01' if (buildResource) = {
+resource redisCacheBuiltInAccessPolicyAssignment 'Microsoft.Cache/redis/accessPolicyAssignments@2023-08-01' = if (buildResource) {
   name: builtInAccessPolicyAssignmentName
   parent: redisCache
   properties: {
@@ -151,7 +151,7 @@ resource redisCacheBuiltInAccessPolicyAssignment 'Microsoft.Cache/redis/accessPo
   }
 }
 // ======================================================================
-resource redisCacheCustomAccessPolicy 'Microsoft.Cache/redis/accessPolicies@2023-08-01' if (buildResource) = {
+resource redisCacheCustomAccessPolicy 'Microsoft.Cache/redis/accessPolicies@2023-08-01' = if (buildResource) {
   name: customAccessPolicyName
   parent: redisCache
   properties: {
@@ -162,7 +162,7 @@ resource redisCacheCustomAccessPolicy 'Microsoft.Cache/redis/accessPolicies@2023
   ]
 }
 // ======================================================================
-resource redisCacheCustomAccessPolicyAssignment 'Microsoft.Cache/redis/accessPolicyAssignments@2023-08-01' if (buildResource) = {
+resource redisCacheCustomAccessPolicyAssignment 'Microsoft.Cache/redis/accessPolicyAssignments@2023-08-01' = if (buildResource) {
   name: customAccessPolicyAssignmentName
   parent: redisCache
   properties: {

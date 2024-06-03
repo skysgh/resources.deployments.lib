@@ -284,6 +284,7 @@ jobs:
             projectName="${{ inputs.PROJECT_NAME }}"
             projectServiceName="${{ inputs.PROJECT_SERVICE_NAME }}"
             environmentId="${{ inputs.PROJECT_ENVIRONMENT_ID}}"
+            defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             clientResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             swaResourceLocationId="${{ inputs.AZURE_LOCATION_ID_SWA }}" 
             swaRepositoryUrl="${{ inputs.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
