@@ -66,8 +66,12 @@ on:
       AZURE_ENTRA_APP_CLIENT_CREDS:
         required: true
       # GITHUB:
+      GH_TOKEN:
+        required: true
       GH_PAT:
         required: true
+      # GITHUB_TOKEN:
+      #  required: true
 env:
   # ======================================================================
   # LIB VARIABLES
@@ -166,7 +170,8 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "GitHUb Token                      : '${{secrets.GITHUB_TOKEN}}'"
-          echo "PAT                               : '${{secrets.GH_PAT}}'"
+          echo "GH Token                          : '${{secrets.GH_TOKEN}}'"
+          echo "GH PAT                            : '${{secrets.GH_PAT}}'"
           echo "::endgroup::"
 
       # ==================================================
