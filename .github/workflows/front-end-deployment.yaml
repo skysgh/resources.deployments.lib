@@ -310,23 +310,29 @@ jobs:
           inlineScript: |
             APIKEY=$(az staticwebapp secrets list --name '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.properties.apiKey')
             DEFAULTHOSTNAME=$(az staticwebapp show -n '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.defaultHostname')
-            PREVIEW_URL="https://${DEFAULTHOSTNAME/.[1-9]./-${{github.event.pull_request.number }}.${{ env.LOCATION }}.1.}"
+            PREVIEW_URL="https://${DEFAULTHOSTNAME}"
 
             echo "APIKEY=$APIKEY" >> $GITHUB_OUTPUT
             echo "DEFAULTHOSTNAME=$DEFAULTHOSTNAME" >> $GITHUB_OUTPUT
             echo "PREVIEW_URL=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
+            echo "SWA_URL=$PREVIEW_URL" >> "$GITHUB_ENV"
+
             echo "::group::SWA outputs"
             echo "SWA API Key..........: '${APIKEY}'"
             echo "SWA Default HostName.: '${DEFAULTHOSTNAME}'"
-            echo "SWA Project SubDir...: '${PREVIEW_URL}'"
+            echo "SWA Project Url: '${PREVIEW_URL}'"
             echo "::endgroup::"    
+
       # ==================================================
       - name: "B.24: Summarise Lib Contents"
         run: |
           echo "::group::Run Context"
           echo "Azure SWA API Token             : '${{ steps.static_web_app_apikey.outputs.APIKEY }}'"
+          echo "Default HostName                : '${{ steps.static_web_app_apikey.outputs.DEFAULTHOSTNAME }}'"
+          echo "Default Preview Url             : '${{ steps.static_web_app_apikey.outputs.PREVIEW_URL }}'"
           echo "GH_TOKEN                        : '${{ secrets.GH_TOKEN }}'"
+          echo "GH_REPO_TOKEN                   : '${{ secrets.GH_REPO_TOKEN  }}'"
       # ==================================================
       - name: "B:33: Static Web App - build and deploy"
         id: static_web_app_build_and_deploy
@@ -353,4 +359,4 @@ jobs:
       - name: "B:40: Summarise"
         id: summarise
         run: |
-          echo "View: https://${{env.DEFAULTHOSTNAME}}"
+          echo "View: https://${{env.SWA_URL}}"
