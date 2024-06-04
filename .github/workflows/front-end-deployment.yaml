@@ -356,5 +356,6 @@ jobs:
         # so use html tags to make a link.
         run: |
           echo "View: https://${{env.SWA_URL}}"
-          echo "SWA Site Url: <a href=\"${{env.SWA_URL}}\" target=\"_blank\">${{env.SWA_URL}}</a>" >> $GITHUB_STEP_SUMMARY
+          echo "SWA Site:" >> $GITHUB_STEP_SUMMARY
+          echo "<a href=\"${{env.SWA_URL}}\" target=\"_blank\">${{env.SWA_URL}}</a>" >> $GITHUB_STEP_SUMMARY
       
