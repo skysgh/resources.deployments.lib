@@ -299,10 +299,17 @@ jobs:
             swaOutputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"
           failOnStdErr: false
       # ==================================================
-      - name: "B:32: Post Static Web App (SWA) Deployment - get API key for deployment and URL"
+      - name: "B:32: Post Static Web App (SWA) Deployment - Get API key for deployment, and URL."
         id: static_web_app_apikey
         uses: azure/CLI@v1
         with:
+          # use resources.azure.com to find out secrets that can be retrieved.
+          # then pick up API Key.
+          # And in the process pickup preview URL.
+          # *** IMPORTANT! *** 
+          # Save to output (which is not env file.)
+          # so that next task can pick it up. 
+          # That said, save one var in ENV file so it can be used by Summarise task, later.
           inlineScript: |
             APIKEY=$(az staticwebapp secrets list --name '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.properties.apiKey')
             DEFAULTHOSTNAME=$(az staticwebapp show -n '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.defaultHostname')
@@ -311,25 +318,17 @@ jobs:
             echo "APIKEY=$APIKEY" >> $GITHUB_OUTPUT
             echo "DEFAULTHOSTNAME=$DEFAULTHOSTNAME" >> $GITHUB_OUTPUT
             echo "PREVIEW_URL=$PREVIEW_URL" >> $GITHUB_OUTPUT
-
             echo "SWA_URL=$PREVIEW_URL" >> "$GITHUB_ENV"
-
-            echo "::group::SWA outputs"
-            echo "SWA API Key..........: '${APIKEY}'"
-            echo "SWA Default HostName.: '${DEFAULTHOSTNAME}'"
-            echo "SWA Project Url: '${PREVIEW_URL}'"
-            echo "::endgroup::"    
-
       # ==================================================
-      - name: "B.24: Summarise Lib Contents"
+      - name: "B.33: Prove that results are in Output, usable by subsequent tasks"
         run: |
           echo "::group::Run Context"
           echo "Azure SWA API Token             : '${{ steps.static_web_app_apikey.outputs.APIKEY }}'"
           echo "Default HostName                : '${{ steps.static_web_app_apikey.outputs.DEFAULTHOSTNAME }}'"
           echo "Default Preview Url             : '${{ steps.static_web_app_apikey.outputs.PREVIEW_URL }}'"
-          echo "GH_TOKEN                        : '${{ secrets.GH_TOKEN }}'"
+          echo "::endgroup::"    
       # ==================================================
-      - name: "B:33: Static Web App - build and deploy"
+      - name: "B:34: Static Web App - build and deploy"
         id: static_web_app_build_and_deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -353,6 +352,9 @@ jobs:
       # ==================================================
       - name: "B:40: Summarise"
         id: summarise
+        # markdown does not permit opening in another window,
+        # so use html tags to make a link.
         run: |
           echo "View: https://${{env.SWA_URL}}"
-          echo "SWA Site Url: [${{env.SWA_URL}}](${{env.SWA_URL}})" >> $GITHUB_STEP_SUMMARY
+          echo "SWA Site Url: <a href=\"${{env.SWA_URL}}\" target=\"_blank\">${{env.SWA_URL}}</a>" >> $GITHUB_STEP_SUMMARY
+      
