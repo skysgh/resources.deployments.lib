@@ -248,5 +248,6 @@ module swaModule './web-static-app-deployment.bicep' = if (buildResource) {
 // ======================================================================
 
 output swaResourceId string = swaModule.outputs.swaResourceId
+output swaResourceName string = swaModule.outputs.swaResourceName
 
 output _ bool = startsWith('${sharedSettings.version}-${swaDomainRegion}...', '.')
