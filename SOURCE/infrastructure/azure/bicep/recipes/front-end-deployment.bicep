@@ -247,6 +247,10 @@ module swaModule './web-static-app-deployment.bicep' = if (buildResource) {
 // Default Outputs: resource, resourceId, resourceName & variable sink
 // ======================================================================
 
+// Main one:
+output resourceId string = swaModule.outputs.swaResourceId
+output resourceName string = swaModule.outputs.swaResourceName
+// In case this file creates more things later (eg cache, etc.)
 output swaResourceId string = swaModule.outputs.swaResourceId
 output swaResourceName string = swaModule.outputs.swaResourceName
 
