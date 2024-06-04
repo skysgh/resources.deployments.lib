@@ -311,14 +311,15 @@ jobs:
             APIKEY=$(az staticwebapp secrets list --name '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.properties.apiKey')
             DEFAULTHOSTNAME=$(az staticwebapp show -n '${{ steps.make_swa.outputs.swaResourceName }}' | jq -r '.defaultHostname')
             PREVIEW_URL="https://${DEFAULTHOSTNAME/.[1-9]./-${{github.event.pull_request.number }}.${{ env.LOCATION }}.1.}"
+
             echo "APIKEY=$APIKEY" >> $GITHUB_OUTPUT
             echo "DEFAULTHOSTNAME=$DEFAULTHOSTNAME" >> $GITHUB_OUTPUT
             echo "PREVIEW_URL=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
             echo "::group::SWA outputs"
-              echo "SWA API Key..........: '${APIKEY}'"
-              echo "SWA Default HostName.: '${DEFAULTHOSTNAME}'"
-              echo "SWA Project SubDir...: '${PREVIEW_URL}'"
+            echo "SWA API Key..........: '${APIKEY}'"
+            echo "SWA Default HostName.: '${DEFAULTHOSTNAME}'"
+            echo "SWA Project SubDir...: '${PREVIEW_URL}'"
             echo "::endgroup::"    
       # ==================================================
       - name: "B.24: Summarise Lib Contents"
