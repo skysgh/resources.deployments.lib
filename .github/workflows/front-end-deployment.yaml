@@ -71,8 +71,6 @@ on:
       # GITHUB:
       GH_TOKEN:
         required: true
-      GH_REPO_TOKEN:
-        required: true
 
 
 
@@ -176,8 +174,6 @@ jobs:
           echo "GitHUb Token                      : '${{secrets.GITHUB_TOKEN}}'"
           echo "GH Token                          : '${{secrets.GH_TOKEN}}'"
           echo "(same as GitHub Token?)           : '${{secrets.GH_TOKEN == secrets.GITHUB_TOKEN}}'"
-          echo "GH Repo Token                     : '${{secrets.GH_REPO_TOKEN}}'"
-          echo "(same as GitHub Token?)           : '${{secrets.GH_REPO_TOKEN == secrets.GITHUB_TOKEN}}'"
           echo "::endgroup::"
 
       # ==================================================
@@ -297,7 +293,7 @@ jobs:
             clientResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             swaResourceLocationId="${{ inputs.AZURE_LOCATION_ID_SWA }}" 
             swaRepositoryUrl="${{ inputs.SRC_GITHUB_REPO_LANDING_PAGE_URL }}"
-            swaRepositoryToken="${{ secrets.GH_REPO_TOKEN }}"
+            swaRepositoryToken="${{ secrets.GH_TOKEN }}"
             swaAppLocation="${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}"
             swaAppBuildCommand="${{ inputs.SWA_ANGULAR_BUILD_COMMAND }}"  
             swaOutputLocation="dist/${{inputs.SWA_ANGULAR_PROJECT_NAME}}"
@@ -332,7 +328,6 @@ jobs:
           echo "Default HostName                : '${{ steps.static_web_app_apikey.outputs.DEFAULTHOSTNAME }}'"
           echo "Default Preview Url             : '${{ steps.static_web_app_apikey.outputs.PREVIEW_URL }}'"
           echo "GH_TOKEN                        : '${{ secrets.GH_TOKEN }}'"
-          echo "GH_REPO_TOKEN                   : '${{ secrets.GH_REPO_TOKEN  }}'"
       # ==================================================
       - name: "B:33: Static Web App - build and deploy"
         id: static_web_app_build_and_deploy
