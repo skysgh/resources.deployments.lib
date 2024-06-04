@@ -71,10 +71,6 @@ on:
       # GITHUB:
       GH_TOKEN:
         required: true
-      GH_REPO_TOKEN:
-        required: true
-      GH_PAT:
-        required: true
       # GITHUB_TOKEN:
       #  required: true
 
@@ -180,10 +176,6 @@ jobs:
           echo "GitHUb Token                      : '${{secrets.GITHUB_TOKEN}}'"
           echo "GH Token                          : '${{secrets.GH_TOKEN}}'"
           echo "(same as GitHub Token?)           : '${{secrets.GH_TOKEN == secrets.GITHUB_TOKEN}}'"
-          echo "GH Repo Token                     : '${{secrets.GH_REPO_TOKEN}}'"
-          echo "(same as GitHub Token?)           : '${{secrets.GH_REPO_TOKEN == secrets.GITHUB_TOKEN}}'"
-          echo "GH PAT                            : '${{secrets.GH_PAT}}'"
-          echo "(same as GitHub Token?)           : '${{secrets.GH_PAT == secrets.GITHUB_TOKEN}}'"
           echo "::endgroup::"
 
       # ==================================================
