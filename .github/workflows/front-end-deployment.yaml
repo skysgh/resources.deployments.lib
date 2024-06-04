@@ -355,4 +355,4 @@ jobs:
         id: summarise
         run: |
           echo "View: https://${{env.SWA_URL}}"
-          echo "SWA Site Url: ${{env.SWA_URL}}" >> $GITHUB_STEP_SUMMARY
+          echo "SWA Site Url: [${{env.SWA_URL}}](${{env.SWA_URL}})" >> $GITHUB_STEP_SUMMARY
