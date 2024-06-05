@@ -212,7 +212,7 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
-          echo "Azure Creds                       : '***'" # ${{secrets.AZURE_ENTRA_APP_CLIENT_CREDS}}
+          echo "Azure Creds                       : '***'" 
           echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "::endgroup::"
           echo ""
