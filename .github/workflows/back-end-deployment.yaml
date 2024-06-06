@@ -360,6 +360,3 @@ jobs:
         with:
            app-name: ${{inputs.APP_NAME}}
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
-
-
-          
