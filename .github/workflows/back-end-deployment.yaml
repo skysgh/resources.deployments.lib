@@ -354,7 +354,7 @@ jobs:
         run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}      
       # ==================================================
       - name: Publish Package
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --property:PublishDir=${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
       # ==================================================
       - name: "Summarising where to publish..."
         run: |
