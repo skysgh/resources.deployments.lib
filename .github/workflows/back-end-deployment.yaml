@@ -358,7 +358,7 @@ jobs:
       # ==================================================
       - name: "Summarising where to publish..."
         run: |
-          echo "To: ${{ steps.crap.outputs.webSitesResourceName }}"
+          echo "To: ${{ steps.crap.outputs.logicResourceGroupName }}/${{ steps.crap.outputs.webSitesResourceName }}"
       
       # ==================================================
       - name: Publish Package
