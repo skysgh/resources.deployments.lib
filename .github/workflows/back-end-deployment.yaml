@@ -335,6 +335,10 @@ jobs:
 
           failOnStdErr: false
       # ==================================================
+      - name: "Summarising where to publish the package that follows..."
+        run: |
+          echo "To: ${{ steps.crap.outputs.logicResourceGroupName }}/${{ steps.crap.outputs.webSitesResourceName }}"
+      # ==================================================
       - name: "B.31: Install Dot.NET"
         uses: actions/setup-dotnet@v3
         with:
@@ -356,10 +360,8 @@ jobs:
       - name: Publish Package
         run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
       # ==================================================
-      - name: "Summarising where to publish..."
-        run: |
-          echo "To: ${{ steps.crap.outputs.logicResourceGroupName }}/${{ steps.crap.outputs.webSitesResourceName }}"
-      
+      - name: Check Published Directory
+        run: ls -la ${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}/published        
       # ==================================================
       - name: Publish Package
         uses: azure/webapps-deploy@v3
