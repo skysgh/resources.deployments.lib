@@ -368,6 +368,7 @@ jobs:
         # resource-group-name: ....
          # ${{inputs.APP_NAME}}
         with:
+           resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
            startup-command: dotnet run
