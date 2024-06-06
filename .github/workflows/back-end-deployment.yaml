@@ -375,4 +375,8 @@ jobs:
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
            startup-command: dotnet run
 
-
+      # ==================================================
+      - name: "Summarising where to publish the package that follows..."
+          # webSitesModule.outputs.customDomains
+        run: |
+          echo "View outcome here: "http://${{ steps.crap.outputs.webSitesDefaultHostName }}"
