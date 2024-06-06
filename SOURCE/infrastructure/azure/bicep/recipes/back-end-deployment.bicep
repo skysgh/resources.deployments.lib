@@ -514,6 +514,9 @@ module sqlServersModule './sql-server-deployment.bicep' = if (buildResource) {
 // Default Outputs: resource, resourceId, resourceName & variable sink
 // ======================================================================
 
+output logicResourceGroupName string = logicResourceGroupName
+output dataResourceGroupName string = dataResourceGroupName
+output backupsResourceGroupName string = backupsResourceGroupName
 
 output webServerFarmsResourceId string = webSitesModule.outputs.webServerFarmsResourceId
 output webServerFarmsResourceName string = webSitesModule.outputs.webServerFarmsResourceName
