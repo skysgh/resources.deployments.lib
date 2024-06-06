@@ -301,7 +301,10 @@ module sqlServersDbFirewallModule '../microsoft/sql/servers/firewallrules.bicep'
 // ======================================================================
 
 output sqlServersResourceId string = serversModule.outputs.resourceId
+output sqlServersResourceName string = serversModule.outputs.resourceName
+
 output sqlServersDbResourceId string = sqlServersDatabasesModule.outputs.resourceId
+output sqlServersDbResourceName string = sqlServersDatabasesModule.outputs.resourceName
 
 // output resource object = serversDatabasesModule.outputs.resource
 // output resourceId string = serversDatabasesModule.outputs.resourceId

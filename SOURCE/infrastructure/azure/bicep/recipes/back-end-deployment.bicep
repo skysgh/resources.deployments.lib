@@ -514,13 +514,23 @@ module sqlServersModule './sql-server-deployment.bicep' = if (buildResource) {
 // Default Outputs: resource, resourceId, resourceName & variable sink
 // ======================================================================
 
-output sqlServersResourceId string = sqlServersModule.outputs.sqlServersResourceId
-output sqlServersDbResourceId string = sqlServersModule.outputs.sqlServersDbResourceId
 
-// 
+output webServerFarmsResourceId string = webSitesModule.outputs.webServerFarmsResourceId
+output webServerFarmsResourceName string = webSitesModule.outputs.webServerFarmsResourceName
+
+output webSitesResourceId string = webSitesModule.outputs.webSitesResourceId
+output webSitesResourceName string = webSitesModule.outputs.webSitesResourceName
 // IMPORTANT: The Managed Identity created by the website.
 // Use to register as a user in other resources (eg: sql Server, etc.)
 output resourcePrincipalId string = webSitesModule.outputs.resourcePrincipalId
+
+output sqlServersResourceId string = sqlServersModule.outputs.sqlServersResourceId
+output sqlServersResourceName string = sqlServersModule.outputs.sqlServersResourceName
+
+output sqlServersDbResourceId string = sqlServersModule.outputs.sqlServersDbResourceId
+output sqlServersDbResourceName string = sqlServersModule.outputs.sqlServersDbResourceName
+
+// 
 
 
 // Provide ref to developed resource:
