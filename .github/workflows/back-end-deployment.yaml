@@ -47,7 +47,7 @@ on:
       APP_NAME:
         required: true
         type: string
-      secrets:
+    secrets:
       GH_TOKEN:
         required: true
       AZURE_SUBSCRIPTION_ID:
