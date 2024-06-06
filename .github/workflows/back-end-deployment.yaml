@@ -376,7 +376,7 @@ jobs:
            startup-command: dotnet run
 
       # ==================================================
-      - name: "Summarising where to publish the package that follows..."
+      - name: "View outcome (visit site)"
           # webSitesModule.outputs.customDomains
         run: |
           echo "View outcome here: "http://${{ steps.crap.outputs.webSitesDefaultHostName }}"
