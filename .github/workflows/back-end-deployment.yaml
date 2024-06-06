@@ -44,7 +44,10 @@ on:
       AZURE_LOCATION_ID:
         required: true
         type: string
-    secrets:
+      APP_NAME:
+        required: true
+        type: string
+      secrets:
       GH_TOKEN:
         required: true
       AZURE_SUBSCRIPTION_ID:
@@ -349,4 +352,14 @@ jobs:
       - name: Test with the dotnet CLI
         run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}      
       # ==================================================
+      - name: Publish Package
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --property:PublishDir=${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
+      # ==================================================
+      - name: Publish Package
+        uses: azure/webapps-deploy@v3
+        with:
+           app-name: ${{inputs.APP_NAME}}
+           package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
+
+
           
