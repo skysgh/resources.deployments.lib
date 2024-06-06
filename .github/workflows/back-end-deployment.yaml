@@ -341,12 +341,12 @@ jobs:
         run: dotnet --version
       # ==================================================
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Build
-        run: dotnet build
+        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} 
       # ==================================================
       - name: Test with the dotnet CLI
-        run: dotnet test      
+        run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}      
       # ==================================================
           
