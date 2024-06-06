@@ -338,6 +338,7 @@ jobs:
       - name: "Summarising where to publish the package that follows..."
         run: |
           echo "To: ${{ steps.crap.outputs.logicResourceGroupName }}/${{ steps.crap.outputs.webSitesResourceName }}"
+
       # ==================================================
       - name: "B.31: Install Dot.NET"
         uses: actions/setup-dotnet@v3
@@ -373,10 +374,10 @@ jobs:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
-           startup-command: dotnet run
+           startup-command: dotnet run 
 
       # ==================================================
       - name: "View outcome (visit site)"
           # webSitesModule.outputs.customDomains
         run: |
-          echo "View outcome here: "http://${{ steps.crap.outputs.webSitesDefaultHostName }}"
+          echo "View outcome here: http://${{ steps.crap.outputs.webSitesDefaultHostName }}"
