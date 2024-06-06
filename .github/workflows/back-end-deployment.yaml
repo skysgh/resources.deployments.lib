@@ -274,6 +274,7 @@ jobs:
           
       # ==================================================
       - name: "B.31: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
+        id: crap
         uses: azure/arm-deploy@v1
         with:
           scope: subscription
@@ -355,8 +356,20 @@ jobs:
       - name: Publish Package
         run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --property:PublishDir=${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
       # ==================================================
+      - name: "Summarising where to publish..."
+        run: |
+          echo "To: ${{ steps.crap.outputs.webSitesResourceName }}"
+      
+      # ==================================================
       - name: Publish Package
         uses: azure/webapps-deploy@v3
+        # app-name: name of the Azure Web App
+        # target-path: ...
+        # resource-group-name: ....
+         # ${{inputs.APP_NAME}}
         with:
-           app-name: ${{inputs.APP_NAME}}
+           app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
+           startup-command: dotnet run
+
+
