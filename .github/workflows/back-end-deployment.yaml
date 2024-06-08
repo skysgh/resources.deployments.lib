@@ -347,26 +347,44 @@ jobs:
       - name: "B.31: Install Dot.NET"
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'
+          dotnet-version: 'dotnetcore|latest'
       # ==================================================
       # You can test your matrix by printing the current dotnet version
       - name: Display dotnet version
         run: dotnet --version
       # ==================================================
+      # You can test your matrix by printing the current dotnet version
+      - name: Display dotnet path
+        run: echo "${{env.DOTNET_PATH}}"
+      # ==================================================
       - name: Install dependencies
         run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Build
-        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} 
+        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration Release
       # ==================================================
       - name: Test with the dotnet CLI
-        run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}      
+        run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Publish Package
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{env.DOTNET_ROOT}}/published      
+      #run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
       # ==================================================
       - name: Check Published Directory
         run: ls -la ${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}/published        
+      # ==================================================
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/published
+      # ==================================================
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+      # ==================================================
+      # LOGIN (again if on different Job)
       # ==================================================
       - name: Publish Package
         uses: azure/webapps-deploy@v3
@@ -377,7 +395,8 @@ jobs:
         with:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
-           package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
+           # package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
+           package: .
            startup-command: dotnet run 
 
       # ==================================================
