@@ -35,6 +35,9 @@ on:
       SRC_REPO_BRANCH:
         required: true
         type: string
+      SRC_REPO_BRANCH_NAME:
+        required: true
+        type: string
       SRC_REPO_SOURCE_ENTRY_FOLDER:
         required: true
         type: string
@@ -208,6 +211,7 @@ jobs:
           echo "::group::Project Repo Variables"
           echo "Project Repo GitHub UserName/Repo : ${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
           echo "Project Repo Branch               : '${{inputs.SRC_REPO_BRANCH}}'"
+          echo "Project Repo Branch Name          : '${{inputs.SRC_REPO_BRANCH_NAME}}'"
           echo "Project Repo Local Relative Dir   : '/'"
           echo "Project Repo Src Directory        : '${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}'"
           echo "Porject Repo Src FileName         : n/a"
