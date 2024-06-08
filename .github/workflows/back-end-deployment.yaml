@@ -77,7 +77,8 @@ env:
   LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
   # ======================================================================
-
+  PACKAGE_NAME: 'deployme_pkg'
+  PACKAGE_DIRECTORY: './packaged'
 
 # Running on one runner:      
 jobs:
@@ -376,13 +377,16 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: .net-app
+          # name of pacakge and path to find files in:
+          name: ${{env.PACKAGE_NAME}}
           path: ${{env.DOTNET_ROOT}}/published
       # ==================================================
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
+          # name of package
+          name: ${{env.PACKAGE_NAME}}
+          path: ${{env.PACKAGE_DIRECTORY}}
       # ==================================================
       # LOGIN (again if on different Job)
       # ==================================================
@@ -396,7 +400,7 @@ jobs:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            # package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
-           package: .
+           package: ${{env.PACKAGE_DIRECTORY}}
            startup-command: dotnet run 
 
       # ==================================================
