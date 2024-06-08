@@ -348,7 +348,7 @@ jobs:
       - name: "B.31: Install Dot.NET"
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 'dotnetcore|latest'
+          dotnet-version: '8.x' #dotnetcore|latest
       # ==================================================
       # You can test your matrix by printing the current dotnet version
       - name: Display dotnet version
