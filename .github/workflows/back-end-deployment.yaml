@@ -77,8 +77,10 @@ env:
   LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
   # ======================================================================
+  
   PACKAGE_NAME: 'deployme_pkg'
-  PACKAGE_DIRECTORY: './packaged'
+  PACKAGE_DIRECTORY_1: './packaged_1'
+  PACKAGE_DIRECTORY_2: './packaged_2'
 
 # Running on one runner:      
 jobs:
@@ -368,25 +370,28 @@ jobs:
         run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Publish Package
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{env.DOTNET_ROOT}}/published      
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{env.PACKAGE_DIRECTORY_1}}      
       #run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published      
       # ==================================================
       - name: Check Published Directory
-        run: ls -la ${{ inputs.SRC_REPO_SOURCE_ENTRY_FOLDER }}/published        
+        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}        
       # ==================================================
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           # name of pacakge and path to find files in:
           name: ${{env.PACKAGE_NAME}}
-          path: ${{env.DOTNET_ROOT}}/published
+          path: ${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           # name of package
           name: ${{env.PACKAGE_NAME}}
-          path: ${{env.PACKAGE_DIRECTORY}}
+          path: ${{env.PACKAGE_DIRECTORY_2}}
+      # ==================================================
+      - name: Check Published Directory
+        run: ls -la ${{env.PACKAGE_DIRECTORY_2}}        
       # ==================================================
       # LOGIN (again if on different Job)
       # ==================================================
@@ -400,7 +405,7 @@ jobs:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            # package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
-           package: ${{env.PACKAGE_DIRECTORY}}
+           package: ${{env.PACKAGE_DIRECTORY_2}}
            startup-command: dotnet run 
 
       # ==================================================
