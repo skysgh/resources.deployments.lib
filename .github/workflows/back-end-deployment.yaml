@@ -411,7 +411,7 @@ jobs:
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            package: ${{env.PACKAGE_DIRECTORY_2}}
            clean: true
-           target-path: '/home/site/wwwroot'
+           target-path: "/home/site/wwwroot"
            # startup-command: dotnet run
            restart: true
       # ==================================================
