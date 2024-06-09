@@ -5,13 +5,13 @@ on:
   # marks it as a callee workflow:
   workflow_call:
   # define optional and requierd inputs
-  # required from caller: 
+  # required from caller:
     inputs:
       # ======================================================================
       # PROJECT VARIABLES
       # ======================================================================
-      # The project name, which informs naming of 
-      # Azure resource groups and resource names 
+      # The project name, which informs naming of
+      # Azure resource groups and resource names
       # definately changes per project.
       # Note: it could be set here, or come from GitHUb repo vars:
       PROJECT_NAME:
@@ -61,7 +61,7 @@ on:
         required: true
       DB_ADMIN_PWD:
         required: true
-        
+
 env:
   # ======================================================================
   # LIB VARIABLES
@@ -75,14 +75,14 @@ env:
   LIB_REPO_GITHUB_USER_AND_REPO_NAME: "skysgh/resources.deployments.lib"
   LIB_REPO_BRANCH: main
   LIB_REPO_SOURCE_ENTRY_FOLDER: "SOURCE/infrastructure/azure/bicep/recipes"
-  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib" 
+  LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
   # ======================================================================
   COMPILATION_CONFIGURATION: 'Release'
   PACKAGE_NAME: 'deployme_pkg'
   PACKAGE_DIRECTORY_1: './packaged_1'
   PACKAGE_DIRECTORY_2: './packaged_2'
 
-# Running on one runner:      
+# Running on one runner:
 jobs:
   # again defining it as a callee job:
   reusable_workflow_job:
@@ -93,7 +93,7 @@ jobs:
     env:
       # DEFINE REPO CONSTANTS
       NODE_VERSION: 20.11.0
-      # ACTIONS_STEP_DEBUG: 'true' 
+      # ACTIONS_STEP_DEBUG: 'true'
       ACTIONS_RUNNER_DEBUG: "true"
     steps:
       # ==================================================
@@ -165,7 +165,7 @@ jobs:
           echo "    specifically due to being installed on the same device, as oppossed"
           echo "    to gaining access by other means which an isolated ASE can't solve anyway)."
           echo "  - Firewall: default baseline firewall capabilities are provided by Azure",
-          echo "    for free, but it remains important that developers develop following best" 
+          echo "    for free, but it remains important that developers develop following best"
           echo "    security practice, namely preventing injection attacks, while they authenticate, "
           echo "    authorise, log, monitor, alert activity as requierd."
           echo "- Storage Account:"
@@ -222,7 +222,7 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
-          echo "Azure Creds                       : '***'" 
+          echo "Azure Creds                       : '***'"
           echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "::endgroup::"
           echo ""
@@ -276,9 +276,9 @@ jobs:
           echo "Target Lib File:"
           ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           echo "::endgroup::"
-          echo 
+          echo
 
-          
+
       # ==================================================
       - name: "B.31: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
         id: crap
@@ -287,19 +287,19 @@ jobs:
           scope: subscription
           region: ${{ inputs.AZURE_LOCATION_ID }}
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          
+
           #template: "${{ env.LIB_BICEP_DIRECTORY }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           template: "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
 
           # Consider: sqlServerDbResourxeLocationId: 'F1','D1','B1','B2','S1','S2'
           # Consider: sqlServerDbResourceSKU: 'Basic', 'S0', 'S1', 'S2'
           # Consider: webServerFarmsResourceSKU can't be Shared/D1 if Linux is used
-          # 
+          #
           # Do NOT wrap values in single quotes (only double quotes if need be)
           # Do NOT inject blank lines.
 
           # "${{ env.PROJECT_ENV_ID}}"
-          
+
           parameters: >
             buildResourceGroup=true
             projectName="${{ inputs.PROJECT_NAME }}"
@@ -307,7 +307,7 @@ jobs:
             environmentId="${{ inputs.PROJECT_ENVIRONMENT_ID}}"
             defaultResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             logicResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
-            webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"  
+            webServerFarmsResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
@@ -336,7 +336,7 @@ jobs:
             sqlServerDbCreateMode="Default"
             sqlServerDbCollation="SQL_Latin1_General_CP1_CI_AS"
             sqlServerDbCatalogCollation="DATABASE_DEFAULT"
-            
+
           # Removed
           #  repositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
 
@@ -373,11 +373,10 @@ jobs:
       # TODO: but not sure what name it would be under (probably solution name?).
       - name: Publish Package
         run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}} --output ${{env.PACKAGE_DIRECTORY_1}}
-      #run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
-        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}        
+        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # Uploading permits sharing artefacts between jobs.
       # Not always required.
@@ -397,7 +396,7 @@ jobs:
       # ==================================================
       - name: Check Published (2) Directory
       # should be same as 1...and it is...
-        run: ls -la ${{env.PACKAGE_DIRECTORY_2}}        
+        run: ls -la ${{env.PACKAGE_DIRECTORY_2}}
       # ==================================================
       # LOGIN (again if on different Job)
       # ==================================================
@@ -410,10 +409,8 @@ jobs:
         with:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
-           # package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
            package: ${{env.PACKAGE_DIRECTORY_2}}
-           startup-command: dotnet run 
-
+           startup-command: dotnet run
       # ==================================================
       - name: "View outcome (visit site)"
           # webSitesModule.outputs.customDomains
