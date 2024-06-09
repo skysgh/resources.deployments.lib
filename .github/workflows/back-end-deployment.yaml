@@ -360,10 +360,10 @@ jobs:
       - name: Display dotnet path
         run: echo "${{env.DOTNET_PATH}}"
       # ==================================================
-      - name: Install dependencies
+      - name: Install dependencies (dotnet restore)
         run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
-      - name: Build
+      - name: Build (dotnet build)
         run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}}
       # ==================================================
       - name: Test with the dotnet CLI
@@ -372,7 +372,7 @@ jobs:
       # requiers where to find file and where to put output.
       # TODO: but not sure what name it would be under (probably solution name?).
       - name: Publish Package
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{env.PACKAGE_DIRECTORY_1}}      
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}} --output ${{env.PACKAGE_DIRECTORY_1}}
       #run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --output ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/published
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
