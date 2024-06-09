@@ -523,6 +523,8 @@ output webServerFarmsResourceName string = webSitesModule.outputs.webServerFarms
 
 output webSitesResourceId string = webSitesModule.outputs.webSitesResourceId
 output webSitesResourceName string = webSitesModule.outputs.webSitesResourceName
+output webSitesDefaultHostName string = webSitesModule.outputs.webSitesDefaultHostName
+
 // IMPORTANT: The Managed Identity created by the website.
 // Use to register as a user in other resources (eg: sql Server, etc.)
 output resourcePrincipalId string = webSitesModule.outputs.resourcePrincipalId
@@ -534,7 +536,6 @@ output sqlServersDbResourceId string = sqlServersModule.outputs.sqlServersDbReso
 output sqlServersDbResourceName string = sqlServersModule.outputs.sqlServersDbResourceName
 
 // 
-
 
 // Provide ref to developed resource:
 //output resource object = xxx.outputs.resource

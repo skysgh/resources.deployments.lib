@@ -185,6 +185,7 @@ output webSitesDefaultHostName string = webSitesModule.outputs.defaultHostName
 output webSitesCustomDomains array = webSitesModule.outputs.customDomains
 
 
+
 output webSitesResourcePrincipalId string = webSitesModule.outputs.resourcePrincipalId
 
 // IMPORTANT: Output Managed Identity info
