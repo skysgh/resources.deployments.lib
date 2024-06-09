@@ -410,7 +410,10 @@ jobs:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            package: ${{env.PACKAGE_DIRECTORY_2}}
+           clean: true
+           target-path: '/home/site/wwwroot'
            # startup-command: dotnet run
+           restart: true
       # ==================================================
       - name: "View outcome (visit site)"
           # webSitesModule.outputs.customDomains
