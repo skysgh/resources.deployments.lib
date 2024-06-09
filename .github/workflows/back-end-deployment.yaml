@@ -409,6 +409,7 @@ jobs:
         with:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
+           slot-name: production
            package: ${{env.PACKAGE_DIRECTORY_2}}
            clean: true
            target-path: "/home/site/wwwroot"
