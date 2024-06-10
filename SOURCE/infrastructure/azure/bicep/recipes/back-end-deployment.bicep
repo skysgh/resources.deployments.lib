@@ -230,6 +230,7 @@ param webSitesIdentityType string  = 'SystemAssigned'
 @allowed(['DOTNETCORE:8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
 param webSitesLinuxFxVersion string
 
+
 // ======================================================================
 // Params: Web Sites SourceControls
 // ======================================================================

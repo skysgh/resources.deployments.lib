@@ -19,7 +19,7 @@ param buildResource bool = true
 // Default Name, Location, Tags,
 // ======================================================================
 // Resource that is required to be set up before
-// instantiating (and associating to it) a 
+// instantiating (and associating to it) a
 // server
 
 @description('The name for the resource (serverFarms). IMPORTANT: Note that it may have one or more nested servers under it. ')

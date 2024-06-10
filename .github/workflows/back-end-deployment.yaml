@@ -319,7 +319,7 @@ jobs:
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
-            webSitesLinuxFxVersion="DOTNETCORE|Latest"
+            webSitesLinuxFxVersion="DOTNETCORE:8.0"
             webSitesSourceControlsRepositoryUrl="https://github.com/${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_TOKEN }}"

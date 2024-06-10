@@ -50,8 +50,9 @@ param httpsOnly bool = true
 
 @description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|Latest\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749')
 // Consider also: 'Node|20'
-@allowed(['DOTNETCORE:8.0','DOTNETCORE|Latest'])
+@allowed(['DOTNETCORE:8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
 param linuxFxVersion string = 'DOTNETCORE|Latest'
+
 
 @description('The type of identity. Default is \'SystemAssigned\' which means creation of *slot specific* Entra Managed Id, that is picked up by outputs at bottom.')
 @allowed(['None', 'SystemAssigned', 'SystemAssigned, UserAssigned', 'UserAssigned'])
