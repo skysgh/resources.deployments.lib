@@ -2,7 +2,7 @@
 // Scope
 // ======================================================================
 //targetScope='resourceGroup'// NO: it stops resourceGroup().location from working: 'subscription'
-// NO. It stops resourceLocation().location from working: 
+// NO. It stops resourceLocation().location from working:
 // targetScope='subscription'
 // NO:targetScope='resourceGroup'
 targetScope='subscription'
@@ -13,7 +13,7 @@ targetScope='subscription'
 var sharedSettings = loadJsonContent('../settings/shared.json')
 
 // ======================================================================
-// Parent Resource Group  
+// Parent Resource Group
 // ======================================================================
 @description('The name of the parent resource group in which to create these resources. ')
 @minLength(3)
@@ -31,30 +31,30 @@ param buildResourceGroup bool = true
 param buildResource bool = true
 
 // ======================================================================
-// Default Settings  
+// Default Settings
 // ======================================================================
 @description('The default name of resources.')
 @minLength(3)
-param defaultResourceName string 
+param defaultResourceName string
 
 @description('The default suffix of resouces, appended to defaultResourceName.')
-param defaultResourceNameSuffix string = uniqueString(toUpper(resourceGroupName)) 
+param defaultResourceNameSuffix string = uniqueString(toUpper(resourceGroupName))
 
 @description('The default location of resources. ')
 // @allowed(...too long...)
-param defaultResourceLocationId string 
+param defaultResourceLocationId string
 
 @description('The tags for this resource. ')
 param defaultResourceTags object = {}
 // ======================================================================
-// Params: Server Farm 
+// Params: Server Farm
 // ======================================================================
 @description('The name of the serverFarm to which site is deployed. Required to be universally unique (\'defaultResourceNameSuffix\' will be appended later)')
-param webServerFarmsResourceName string = toLower(defaultResourceName) 
+param webServerFarmsResourceName string = toLower(defaultResourceName)
 
 @description('The location of the serverFarm.')
 // @allowed(...too long...)
-param webServerFarmsResourceLocationId string  = toLower(defaultResourceLocationId) 
+param webServerFarmsResourceLocationId string  = toLower(defaultResourceLocationId)
 
 @description('The web app service plan SKU. Options are: F1,D1,B1,B2,S1,S2. Default: D1 (as F1 can only be used once, and hence needs monitoring).')
 @allowed(['F1','D1','B1','B2','S1','S2'])
@@ -63,7 +63,7 @@ param webServerFarmsResourceSKU string = 'D1'
 @description('The tags for this resource.')
 param webServerFarmsResourceTags object = defaultResourceTags
 // ======================================================================
-// Params: Sites 
+// Params: Sites
 // ======================================================================
 @description('The Name of the site on the server farm. Does not need to be universally unique.')
 param webSitesResourceName string = toLower(defaultResourceName)
@@ -119,7 +119,7 @@ var webSitesSourceCountrolsSetupFlag = ( (startsWith(webSitesSourceControlsRepos
 
 module webServerFarmsModule '../microsoft/web/serverfarms.bicep' = if (buildResource) {
   name:  '${deployment().name}_serverFarms_module'
-  scope: resourceGroup(resourceGroupName) 
+  scope: resourceGroup(resourceGroupName)
   params: {
     resourceName               : toLower('${webServerFarmsResourceName}')
     resourceLocationId         : webServerFarmsResourceLocationId
@@ -132,11 +132,11 @@ module webServerFarmsModule '../microsoft/web/serverfarms.bicep' = if (buildReso
 // Resource bicep: Sites
 // ======================================================================
 module webSitesModule '../microsoft/web/sites.bicep' = if (buildResource) {
-  // depends implicitely on the 
+  // depends implicitely on the
   // [webServerFarmsModule]
   // pass parameters:
   name:  '${deployment().name}-sites-module'
-  scope: resourceGroup(resourceGroupName) 
+  scope: resourceGroup(resourceGroupName)
   params: {
     // Implicit dependence:
     parentResourceId           : webServerFarmsModule.outputs.resourceId
@@ -153,12 +153,12 @@ module webSitesModule '../microsoft/web/sites.bicep' = if (buildResource) {
 // ======================================================================
 // Resource bicep: Sites/SourceControls
 // ======================================================================
-module webSitesSourceControlsModule '../microsoft/web/sites/sourcecontrols.bicep' = if (buildResource && webSitesSourceCountrolsSetupFlag) {
+module webSitesSourceControlsModule '../microsoft/web/sites/sourcecontrols.bicep' = if (buildResource && webSitesSourceCountrolsSetupFlag && false) {
   dependsOn: [webSitesModule]
   name:  '${deployment().name}-sites-sc-module'
-  scope: resourceGroup(resourceGroupName) 
+  scope: resourceGroup(resourceGroupName)
   // child resources don't use 'scope', they use 'parent':
-  // parent: webSitesModule  
+  // parent: webSitesModule
   params: {
     resourceName               : toLower('${webSitesSourceControlsResourceName}${defaultResourceNameSuffix}') //  sitesModule.outputs.resourceName      // Note: Same name as parent site:
     resourceLocationId         : webSitesSourceControlsResourceLocationId
