@@ -319,7 +319,7 @@ jobs:
             webSitesLinuxFxVersion="DOTNETCORE|Latest"
             webSitesSourceControlsRepositoryUrl="https://github.com/${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
             webSitesSourceControlsRepositoryBranch="main"
-            webSitesSourceControlsRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
+            webSitesSourceControlsRepositoryToken="${{ secrets.GH_TOKEN }}"
             webSitesSourceControlsRepositorySourceLocation="${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}"
             dataResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
