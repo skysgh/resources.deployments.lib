@@ -50,7 +50,7 @@ param httpsOnly bool = true
 
 @description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|Latest\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749')
 // Consider also: 'Node|20'
-@allowed(['DOTNETCORE|2.2','DOTNETCORE|3.0','DOTNETCORE|3.1','DOTNETCORE|LTS','DOTNETCORE|Latest'])
+@allowed(['DOTNETCORE:8.0','DOTNETCORE|Latest'])
 param linuxFxVersion string = 'DOTNETCORE|Latest'
 
 @description('The type of identity. Default is \'SystemAssigned\' which means creation of *slot specific* Entra Managed Id, that is picked up by outputs at bottom.')
@@ -71,9 +71,9 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
   name: useName
   location: useLocation
   tags: useTags
-  
+
   identity: {
-    type: identityType 
+    type: identityType
   }
   properties: {
     serverFarmId: parentResourceId
