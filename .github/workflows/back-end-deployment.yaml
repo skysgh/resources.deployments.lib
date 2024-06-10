@@ -79,6 +79,10 @@ env:
   # ======================================================================
   COMPILATION_CONFIGURATION: 'Release'
   DOTNET_VERSION: 8.x
+  # SEE:
+  # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-publish
+  # ABOUT --output flag on dotnet publish ...
+  #
   # PACKAGE_DIRECTORY_1: './packaged_1'
   PACKAGE_DIRECTORY_1: './App.Host/bin/Release/net8.0/'
   PACKAGE_DIRECTORY_2: './packaged_2'
@@ -273,7 +277,7 @@ jobs:
           echo "::group::Run Context"
           echo "$GITHUB_WORKSPACE                 : '${{github.env}}'"
           pwd
-          echo "Lib  Folder                       :'${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
+          echo "Lib  Folder                       : '${{env.LIB_REPO_DEPLOYMENT_DIR}}'"
           echo "Target Lib File:"
           ls -la "${{ env.LIB_REPO_DEPLOYMENT_DIR }}/${{ env.LIB_REPO_SOURCE_ENTRY_FOLDER }}/${{env.LIB_REPO_MAIN_BICEP_FILE}}"
           echo "::endgroup::"
@@ -313,16 +317,16 @@ jobs:
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
             webSitesLinuxFxVersion="DOTNETCORE|Latest"
-            webSitesSourceControlsRepositoryUrl="https://todo"
+            webSitesSourceControlsRepositoryUrl="https://github.com/${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_BASE_CLIENT_THEMED }}"
-            webSitesSourceControlsRepositorySourceLocation="/"
+            webSitesSourceControlsRepositorySourceLocation="${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}"
             dataResourceGroupLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerMinimalTlsVersion="1.2"
             sqlServerIdentityType="None"
-            sqlServerAdminUserName="${{secrets.DB_ADMIN_NAME}}"
             sqlServerAdminPassword="${{secrets.DB_ADMIN_PWD}}"
+            sqlServerAdminUserName="${{secrets.DB_ADMIN_NAME}}"
             sqlServerDbResourceName="Default"
             sqlServerDbResourceLocationId="${{ inputs.AZURE_LOCATION_ID }}"
             sqlServerDbResourceSKU="S1"
