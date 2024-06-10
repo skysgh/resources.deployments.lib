@@ -348,7 +348,7 @@ jobs:
 
       # ==================================================
       - name: "B.31: Install Dot.NET"
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x' #dotnetcore|latest
       # ==================================================
@@ -364,7 +364,8 @@ jobs:
         run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Build (dotnet build)
-        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}}
+        # --configuration ${{env.COMPILATION_CONFIGURATION}}
+        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Test with the dotnet CLI
         run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
@@ -381,22 +382,22 @@ jobs:
       # Uploading permits sharing artefacts between jobs.
       # Not always required.
       # requires name of pacakge to make and path to find files in:
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{env.PACKAGE_NAME}}
-          path: ${{env.PACKAGE_DIRECTORY_1}}
-      # ==================================================
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          # name of package and where to put it
-          name: ${{env.PACKAGE_NAME}}
-          path: ${{env.PACKAGE_DIRECTORY_2}}
+      # - name: Upload artifact for deployment job
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{env.PACKAGE_NAME}}
+      #     path: ${{env.PACKAGE_DIRECTORY_1}}
+      # # ==================================================
+      # - name: Download artifact from build job
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     # name of package and where to put it
+      #     name: ${{env.PACKAGE_NAME}}
+      #     path: ${{env.PACKAGE_DIRECTORY_2}}
       # ==================================================
       - name: Check Published (2) Directory
       # should be same as 1...and it is...
-        run: ls -la ${{env.PACKAGE_DIRECTORY_2}}
+        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # LOGIN (again if on different Job)
       # ==================================================
@@ -409,14 +410,14 @@ jobs:
         with:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
-           slot-name: production
-           package: ${{env.PACKAGE_DIRECTORY_2}}
-           clean: true
-           target-path: "/home/site/wwwroot"
+           # slot-name: production
+           package: ${{env.PACKAGE_DIRECTORY_1}}
+           # clean: true
+           #target-path: "/home/site/wwwroot"
            # startup-command: dotnet run
-           restart: true
+           # restart: true
       # ==================================================
       - name: "View outcome (visit site)"
           # webSitesModule.outputs.customDomains
         run: |
-          echo "View outcome here: http://${{ steps.crap.outputs.webSitesDefaultHostName }}"
+          echo "View outcome here: https://${{ steps.crap.outputs.webSitesDefaultHostName }}"
