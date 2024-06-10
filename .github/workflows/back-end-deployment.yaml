@@ -80,7 +80,7 @@ env:
   COMPILATION_CONFIGURATION: 'Release'
   DOTNET_VERSION: 8.x
   # PACKAGE_DIRECTORY_1: './packaged_1'
-  PACKAGE_DIRECTORY_1: './bin/Release/net8.0/'
+  PACKAGE_DIRECTORY_1: './App.Host/bin/Release/net8.0/'
   PACKAGE_DIRECTORY_2: './packaged_2'
   PACKAGE_NAME: 'deployme_pkg'
 # Running on one runner:
@@ -380,8 +380,7 @@ jobs:
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
-        #run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
-        run: ls -la .
+        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # Uploading permits sharing artefacts between jobs.
       # Not always required.
