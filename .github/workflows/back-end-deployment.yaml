@@ -424,7 +424,7 @@ jobs:
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
            # clean: true
            #target-path: "/home/site/wwwroot"
-           # startup-command: dotnet run
+           startup-command: dotnet run
            # restart: true
       # ==================================================
       - name: "View outcome (visit site)"
