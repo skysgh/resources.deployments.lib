@@ -1,7 +1,7 @@
 // ======================================================================
 // Background
 // ======================================================================
-// A resonable set of resources that use resources as a service, 
+// A resonable set of resources that use resources as a service,
 // not trying to solve it in an older lan based way.
 
 // ======================================================================
@@ -13,22 +13,22 @@
 //   https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
 // - Resource Groups: maxLength:90.Most chars ok.
 // - Sql Server: names must be globally unique.
-//   whereas Sql Server Database names do not. 
+//   whereas Sql Server Database names do not.
 // - Web Server: farm names are not required to be globally unique
-//   whereas names of Web Sites on them must be globally unique. 
-// - StorageAccounts: must be globally unique, can only be 24 chars long. 
+//   whereas names of Web Sites on them must be globally unique.
+// - StorageAccounts: must be globally unique, can only be 24 chars long.
 //   which with a uniquestring (13 chars) means only 11 chars prefix ok.
-// - most names are max 50, lowercase, alphanumeric, and hyphens. 
+// - most names are max 50, lowercase, alphanumeric, and hyphens.
 //   but limited by storageAccount (no hyphens, max 24),
 //   unless blockchainMembers (20) or cloudservice (15).
 // = HENCE:
 // - Resource Group names are uppercase (PROJNAME-ENV-PROJTIER-SERVICE)
-// - Resource names are all made lowercase (PROJNAME), 
+// - Resource names are all made lowercase (PROJNAME),
 //   suffixed with uniqueString(RESOURCEGROUP)
 //   limited to no hyphens/no underscores, a max of 11 chars Only
 //
 // Design:
-// - Taking advantage of *managed* resources, 
+// - Taking advantage of *managed* resources,
 //   And with no requirement for dedicated machines, scaling, vnets.
 //   (Otherwise ,why bother with hosting in the cloud?)
 //   It also lowers cost.
@@ -38,7 +38,7 @@
 //   protection that checks code before merging.
 //   It's more work upfront, but less cost over the service lifespan.
 //   The decision of course depends on the talent you have available.
-// 
+//
 // ======================================================================
 // Contents
 // ======================================================================
@@ -47,8 +47,8 @@
 // Web ServerFarm.
 // Web Site on the server farm.  Develops an MSI...
 // Registers the MSI as having rights to Key vault
-// Sql Server (using Db Admin Username/Key) 
-// Sql Server Db 
+// Sql Server (using Db Admin Username/Key)
+// Sql Server Db
 // Storage account
 // Sql Storage Backup
 //
@@ -84,7 +84,7 @@
 // The following have defaults, but worth considering as impact behaviour:
 // - sqlServerDbCollation
 // - sqlServerDbSampleName
-// - webSitesLinuxFxVersion    
+// - webSitesLinuxFxVersion
 // - as well as the following maybe, although I recommend against it:
 // - webSitesSourceControlsRepositoryUrl
 // - webSitesSourceControlsRepositoryToken
@@ -128,7 +128,7 @@ param environmentId string
 param projectServiceName string
 
 // ======================================================================
-// Params: Resource Defaults 
+// Params: Resource Defaults
 // ======================================================================
 @description('The default name of resources.')
 param defaultResourceName string = toLower(projectName)
@@ -227,7 +227,7 @@ param webSitesHttpOnly bool = true
 param webSitesIdentityType string  = 'SystemAssigned'
 
 @description('The Function eXtension to define the runtime stack. Default is \'DOTNETCORE|Latest\' but best be specific to not get caught out if .net.core releases a version that you are in compatible with.')
-@allowed(['DOTNETCORE|2.2','DOTNETCORE|3.0','DOTNETCORE|3.1','DOTNETCORE|LTS','DOTNETCORE|Latest'])
+@allowed(['DOTNETCORE:8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
 param webSitesLinuxFxVersion string
 
 // ======================================================================
@@ -256,10 +256,10 @@ param webSitesSourceControlsRepositoryBranch string = 'main'
 param webSitesSourceControlsRepositorySourceLocation string = '/'
 
 // ======================================================================
-// Params: Sql Server 
+// Params: Sql Server
 // ======================================================================
 @description('The name of the sql server. Default is lower case of \'defaultResourceName\'.  Required to be universally unique (\'defaultResourceNameSuffix\' will be appended later).')
-param sqlServerResourceName string = toLower(defaultResourceName) 
+param sqlServerResourceName string = toLower(defaultResourceName)
 
 @description('Location of Resource. Default is \'defaultResourceLocationId\'.')
 //TOO Big: @allowed([ 'australiacentral'])
@@ -280,16 +280,16 @@ param sqlServerMinimalTlsVersion string = '1.2'
 @minLength(3)
 @maxLength(128)
 @secure()
-param sqlServerAdminUserName string 
+param sqlServerAdminUserName string
 
 @description('An Admin User\'s Pwd, to create the DB in the first place. Source from a pipeline environment Secret or pipeline accessible keyvault. Must have 3 of 4 of [a-z], [A-Z], [0-9], or [specialchars]')
 @minLength(8)
 @maxLength(128)
 @secure()
-param sqlServerAdminPassword string 
+param sqlServerAdminPassword string
 
 // ======================================================================
-// Params: Sql Server Database  
+// Params: Sql Server Database
 // ======================================================================
 
 @description('Name of database. Default is set to lowercase of \'sqlServerResourceName\'. Not required to be globally unique.')
@@ -422,7 +422,7 @@ module webSitesModule './web-dynamic-app-deployment.bicep' = if (buildResource) 
     webServerFarmsResourceName                      : webServerFarmsResourceName
     webServerFarmsResourceLocationId                : webServerFarmsResourceLocationId
     webServerFarmsResourceTags                      : union( webServerFarmsResourceTags, defaultResourceTags, sharedSettings.defaultTags)
-    // 
+    //
     webServerFarmsResourceSKU                       : webServerFarmsResourceSKU
     // -----
     webSitesResourceName                            : webSitesResourceName
@@ -436,7 +436,7 @@ module webSitesModule './web-dynamic-app-deployment.bicep' = if (buildResource) 
     webSitesSourceControlsResourceName              : webSitesResourceName
     webSitesSourceControlsResourceLocationId        : webSitesResourceLocationId
     webSitesSourceControlsResourceTags              : union(webSitesSourceControlsResourceTags, defaultResourceTags, sharedSettings.defaultTags)
-    // 
+    //
     webSitesSourceControlsRepositoryUrl             : webSitesSourceControlsRepositoryUrl
     webSitesSourceControlsRepositoryToken           : webSitesSourceControlsRepositoryToken
     webSitesSourceControlsRepositoryBranch          : webSitesSourceControlsRepositoryBranch
@@ -469,12 +469,12 @@ module sqlServersModule './sql-server-deployment.bicep' = if (buildResource) {
     sqlServerIdentityType                    : sqlServerIdentityType
     sqlServerMinimalTlsVersion               : sqlServerMinimalTlsVersion
     sqlServerAdminUserName                   : sqlServerAdminUserName
-    sqlServerAdminPassword                   : sqlServerAdminPassword 
+    sqlServerAdminPassword                   : sqlServerAdminPassword
     // -----
     sqlServerDbResourceName                  : sqlServerDbResourceName
     sqlServerDbResourceLocationId            : sqlServerDbResourceLocationId
     sqlServerDbResourceTags                  : union(sqlServerDbResourceTags, defaultResourceTags, sharedSettings.defaultTags)
-    //    
+    //
     sqlServerDbResourceSKU                   : sqlServerDbResourceSKU
     sqlServerDbResourceTier                  : sqlServerDbResourceTier
     //
@@ -535,7 +535,7 @@ output sqlServersResourceName string = sqlServersModule.outputs.sqlServersResour
 output sqlServersDbResourceId string = sqlServersModule.outputs.sqlServersDbResourceId
 output sqlServersDbResourceName string = sqlServersModule.outputs.sqlServersDbResourceName
 
-// 
+//
 
 // Provide ref to developed resource:
 //output resource object = xxx.outputs.resource
