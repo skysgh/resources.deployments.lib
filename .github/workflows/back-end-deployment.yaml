@@ -78,10 +78,11 @@ env:
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
   # ======================================================================
   COMPILATION_CONFIGURATION: 'Release'
-  PACKAGE_NAME: 'deployme_pkg'
-  PACKAGE_DIRECTORY_1: './packaged_1'
+  DOTNET_VERSION: 8.x
+  # PACKAGE_DIRECTORY_1: './packaged_1'
+  PACKAGE_DIRECTORY_1: './bin/Release/8.0/publish/'
   PACKAGE_DIRECTORY_2: './packaged_2'
-
+  PACKAGE_NAME: 'deployme_pkg'
 # Running on one runner:
 jobs:
   # again defining it as a callee job:
@@ -350,7 +351,7 @@ jobs:
       - name: "B.31: Install Dot.NET"
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x' #dotnetcore|latest
+          dotnet-version: ${{env.DOTNET_VERSION}} #dotnetcore|latest
       # ==================================================
       # You can test your matrix by printing the current dotnet version
       - name: Display dotnet version
@@ -373,8 +374,9 @@ jobs:
       # requiers where to find file and where to put output.
       # TODO: but not sure what name it would be under (probably solution name?).
       - name: Publish Package
-      #         --output ${{env.PACKAGE_DIRECTORY_1}}
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}}   --property:PublishDir=${{env.PACKAGE_DIRECTORY_1}}
+      # --output ${{env.PACKAGE_DIRECTORY_1}}
+      # --property:PublishDir=${{env.PACKAGE_DIRECTORY_1}}
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}}
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
