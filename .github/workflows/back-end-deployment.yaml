@@ -400,7 +400,7 @@ jobs:
       # ==================================================
       - name: Check Published (2) Directory
       # should be same as 1...and it is...
-        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
+        run: ls -la ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # LOGIN (again if on different Job)
       # ==================================================
