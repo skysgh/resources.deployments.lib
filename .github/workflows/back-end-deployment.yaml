@@ -380,7 +380,7 @@ jobs:
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
-        run: ls -la ${{env.PACKAGE_DIRECTORY_1}}
+        run: ls -la ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # Uploading permits sharing artefacts between jobs.
       # Not always required.
@@ -414,7 +414,7 @@ jobs:
            resource-group-name: ${{steps.crap.outputs.logicResourceGroupName}}
            app-name: ${{ steps.crap.outputs.webSitesResourceName }}
            # slot-name: production
-           package: ${{env.PACKAGE_DIRECTORY_1}}
+           package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
            # clean: true
            #target-path: "/home/site/wwwroot"
            # startup-command: dotnet run
