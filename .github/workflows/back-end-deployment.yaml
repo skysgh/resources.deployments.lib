@@ -423,7 +423,7 @@ jobs:
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
            # clean: true
            #target-path: "/home/site/wwwroot"
-           startup-command: dotnet run --no-dependencies --no-launch-profile --verbosity 3
+           startup-command: dotnet run --no-dependencies --no-launch-profile --verbosity detailed
            # restart: true
       # ==================================================
       - name: "View outcome (visit site)"
