@@ -372,8 +372,7 @@ jobs:
         run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
       # ==================================================
       - name: Build (dotnet build)
-        # --configuration ${{env.COMPILATION_CONFIGURATION}}
-        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
+        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}}
       # ==================================================
       - name: Test with the dotnet CLI
         run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}
@@ -424,7 +423,7 @@ jobs:
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
            # clean: true
            #target-path: "/home/site/wwwroot"
-           startup-command: dotnet run
+           startup-command: dotnet run --no-dependencies --no-launch-profile --verbosity 3
            # restart: true
       # ==================================================
       - name: "View outcome (visit site)"
