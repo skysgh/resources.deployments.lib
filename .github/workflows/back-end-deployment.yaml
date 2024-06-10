@@ -282,7 +282,7 @@ jobs:
       # ==================================================
       - name: "B.31: Run main bicep file (${{inputs.PROJECT_DESCRIPTION}})"
         id: crap
-        uses: azure/arm-deploy@v1
+        uses: azure/arm-deploy@v2
         with:
           scope: subscription
           region: ${{ inputs.AZURE_LOCATION_ID }}
@@ -373,7 +373,8 @@ jobs:
       # requiers where to find file and where to put output.
       # TODO: but not sure what name it would be under (probably solution name?).
       - name: Publish Package
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}} --output ${{env.PACKAGE_DIRECTORY_1}}
+      #         --output ${{env.PACKAGE_DIRECTORY_1}}
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}}   --property:PublishDir=${{env.PACKAGE_DIRECTORY_1}}
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
@@ -383,13 +384,13 @@ jobs:
       # Not always required.
       # requires name of pacakge to make and path to find files in:
       # - name: Upload artifact for deployment job
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
       #     name: ${{env.PACKAGE_NAME}}
       #     path: ${{env.PACKAGE_DIRECTORY_1}}
       # # ==================================================
       # - name: Download artifact from build job
-      #   uses: actions/download-artifact@v3
+      #   uses: actions/download-artifact@v4
       #   with:
       #     # name of package and where to put it
       #     name: ${{env.PACKAGE_NAME}}
