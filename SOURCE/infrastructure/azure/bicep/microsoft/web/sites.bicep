@@ -105,7 +105,7 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
           value: resourceName
         }
         {
-          name: 'azure-linuxFxVersion'
+          name: 'azureLinuxFxVersion'
           value: linuxFxVersion
         }
         {
