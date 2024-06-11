@@ -63,7 +63,7 @@ param identityType string  = 'SystemAssigned'
 // ======================================================================
 var useName = resourceName
 var useLocation = resourceLocationId
-var useTags = union(resourceTags,sharedSettings.defaultTags)
+var useTags = union(resourceTags,sharedSettings.defaultTags, { linuxFxVersion: linuxFxVersion} )
 
 // ======================================================================
 // Resource bicep
