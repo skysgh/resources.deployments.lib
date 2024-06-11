@@ -65,6 +65,7 @@ var useName = resourceName
 var useLocation = resourceLocationId
 var useTags = union(resourceTags,sharedSettings.defaultTags, { linuxFxVersion: linuxFxVersion} )
 
+var useFrameworkVersion = '8.0' //TODO: Parse from linuxFxVersion
 // ======================================================================
 // Resource bicep
 // ======================================================================
@@ -78,22 +79,59 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
   }
   properties: {
     serverFarmId: parentResourceId
+    enabled: true
     httpsOnly: httpsOnly
+    // publicNetworkAccess: true
     siteConfig: {
+      // alwaysOn:true
       linuxFxVersion: linuxFxVersion
+      // windowsFxVersion: string
       // Not essential, just showing how to set config values here.
+      http20Enabled: true
+      webSocketsEnabled: true
+      //cors:
+      // defaultDocuments: [...]
+      //requestTracingEnabled:true
+      //requestTracingExpirationTime:
+      //detailedErrorLoggingEnabled:true
+      //connectionStrings :[...]
       appSettings: [
         {
-          name: 'server'
+          name: 'azure-serverPlan'
           value: parentResourceId
         }
         {
-          name: 'site'
+          name: 'azure-site'
           value: resourceName
         }
+        {
+          name: 'azure-linuxFxVersion'
+          value: linuxFxVersion
+        }
+        {
+          name: 'azure-scm'
+          value: '${resourceName}.scm.azurewebsites.net'
+        }
       ]
-    }
-  }
+      minTlsVersion: '1.2'
+      netFrameworkVersion: 'v${useFrameworkVersion}'
+    }//~siteConfig
+
+      // clientAffinityEnabled: false
+
+      // scmMinTlsVersion: '1.2'
+      // remoteDebuggingEnabled: false
+      // remoteDebuggingVersion
+      // requestTracingEnabled
+      // requiestTracingExpirationTime: string
+      // httpLoggingEnabled: true
+      // tracingOptions: string
+      // detailedErrorLoggingEnabled: bool
+      // requestTracingExpirationTime
+      // scmType: 'None' 'GitHub' // 'VSO'
+      // cors: {...}
+      // defaultDocuments: [...]
+  }//~properties
 }
 
 // ======================================================================
