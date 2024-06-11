@@ -82,7 +82,7 @@ param webSitesHttpOnly bool = true
 param webSitesIdentityType string  = 'SystemAssigned'
 
 @description('The Function eXtension to define the runtime stack. Default is \'DOTNETCORE|Latest\' but best be specific to not get caught out if .net.core releases a version that you are in compatible with.')
-@allowed(['DOTNETCORE:8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
+@allowed(['DOTNETCORE|8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
 param webSitesLinuxFxVersion string
 
 

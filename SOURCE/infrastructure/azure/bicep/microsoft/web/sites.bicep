@@ -50,7 +50,7 @@ param httpsOnly bool = true
 
 @description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|Latest\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749')
 // Consider also: 'Node|20'
-@allowed(['DOTNETCORE:8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
+@allowed(['DOTNETCORE|8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
 param linuxFxVersion string = 'DOTNETCORE|Latest'
 
 

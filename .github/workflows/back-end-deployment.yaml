@@ -306,7 +306,7 @@ jobs:
           # "${{ env.PROJECT_ENV_ID}}"
           # Using az webapp list-runtimes --linux
           # can determine that the following is latest today:
-          # DOTNETCORE:8.0
+          # DOTNETCORE|8.0
           # whereas using the following may be a source of issue (can only see it using .net core 6.0)
           parameters: >
             buildResourceGroup=true
@@ -319,7 +319,7 @@ jobs:
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
-            webSitesLinuxFxVersion="DOTNETCORE:8.0"
+            webSitesLinuxFxVersion="DOTNETCORE|8.0"
             webSitesSourceControlsRepositoryUrl="https://github.com/${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_TOKEN }}"
