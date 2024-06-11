@@ -50,6 +50,9 @@ on:
       APP_NAME:
         required: true
         type: string
+      DOTNET_FRAMEWORK_VERSION:
+        required: true
+        type: string
     secrets:
       GH_TOKEN:
         required: true
@@ -78,7 +81,7 @@ env:
   LIB_REPO_DEPLOYMENT_DIR: "DeploymentLib"
   # ======================================================================
   COMPILATION_CONFIGURATION: 'Release'
-  DOTNET_VERSION: 8.x
+  DOTNET_FRAMEWORK_VERSION: replace(${{inputs.DOTNET_FRAMEWORK_VERSION}},'.0','.x') //8.x
   # SEE:
   # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-publish
   # ABOUT --output flag on dotnet publish ...
@@ -319,7 +322,7 @@ jobs:
             webServerFarmsResourceSKU="S1"
             webSitesHttpOnly=true
             webSitesIdentityType="SystemAssigned"
-            webSitesLinuxFxVersion="DOTNETCORE|8.0"
+            webSitesLinuxFxVersion="DOTNETCORE|${{inputs.DOTNET_FRAMEWORK_VERSION }}"
             webSitesSourceControlsRepositoryUrl="https://github.com/${{inputs.SRC_REPO_GITHUB_USER_AND_REPO_NAME}}"
             webSitesSourceControlsRepositoryBranch="main"
             webSitesSourceControlsRepositoryToken="${{ secrets.GH_TOKEN }}"
