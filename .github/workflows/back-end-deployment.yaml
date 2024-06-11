@@ -423,8 +423,8 @@ jobs:
            # slot-name: production
            package: ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}/${{env.PACKAGE_DIRECTORY_1}}
            # clean: true
-           target-path: "/home/site/wwwroot"  # --verbosity detailed
-           startup-command: dotnet App.Host.dll
+           # target-path: "/home/site/wwwroot"  # --verbosity detailed
+           # startup-command: dotnet App.Host.dll
            # restart: true
       # ==================================================
       - name: "View outcome (visit site)"
