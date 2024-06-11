@@ -97,11 +97,11 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
       //connectionStrings :[...]
       appSettings: [
         {
-          name: 'azure-serverPlan'
+          name: 'azureServerPlan'
           value: parentResourceId
         }
         {
-          name: 'azure-site'
+          name: 'azureSite'
           value: resourceName
         }
         {
@@ -109,7 +109,7 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
           value: linuxFxVersion
         }
         {
-          name: 'azure-scm'
+          name: 'azureScm'
           value: '${resourceName}.scm.azurewebsites.net'
         }
       ]

@@ -230,11 +230,11 @@ jobs:
           echo ""
           echo "::group::Azure Variables"
           echo "Azure Subscription                : '${{secrets.AZURE_SUBSCRIPTION_ID}}'"
-          echo "Azure Creds                       : '***'"
+          echo "Azure Creds                       : '{*** ...}'"
           echo "Azure Resource Location           : '${{inputs.AZURE_LOCATION_ID}}'"
           echo "::endgroup::"
           echo ""
-          echo "::group::Azure Variables"
+          echo "::group::GitHub Variables"
           echo "GitHub Token                      : ''...'"
           echo "::endgroup::"
 
