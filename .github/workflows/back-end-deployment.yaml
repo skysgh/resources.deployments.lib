@@ -372,17 +372,17 @@ jobs:
         run: dotnet restore ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}  --verbosity detailed
       # ==================================================
       - name: Build (dotnet build)
-        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}}  --verbosity detailed
+        run: dotnet build ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}} --no-restore  --verbosity detailed
       # ==================================================
       - name: Test with the dotnet CLI
-        run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}}  --verbosity detailed
+        run: dotnet test ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --no-build --verbosity detailed
       # ==================================================
       # requiers where to find file and where to put output.
       # TODO: but not sure what name it would be under (probably solution name?).
       - name: Publish Package
       # --output ${{env.PACKAGE_DIRECTORY_1}}
       # --property:PublishDir=${{env.PACKAGE_DIRECTORY_1}}
-        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} -c ${{env.COMPILATION_CONFIGURATION}}  --verbosity detailed
+        run: dotnet publish ${{inputs.SRC_REPO_SOURCE_ENTRY_FOLDER}} --configuration ${{env.COMPILATION_CONFIGURATION}} --no-build --verbosity detailed
       # ==================================================
       # shows that it contains multiple files (App.Host dll/pdb/json, dependencies, app.settings.json, web.config, etc.)
       - name: Check Published (1) Directory
