@@ -105,16 +105,16 @@ resource resource 'Microsoft.Web/sites@2020-06-01' = if (buildResource) {
           value: parentResourceId
         }
         {
-          name: 'azureSite'
-          value: resourceName
-        }
-        {
           name: 'azureLinuxFxVersion'
           value: linuxFxVersion
         }
         {
+          name: 'azureSite'
+          value: 'https://${resourceName}.azurewebsites.net'
+        }
+        {
           name: 'azureScm'
-          value: '${resourceName}.scm.azurewebsites.net'
+          value: 'https://${resourceName}.scm.azurewebsites.net'
         }
       ]
       minTlsVersion: '1.2'
