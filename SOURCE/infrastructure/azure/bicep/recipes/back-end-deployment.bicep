@@ -226,9 +226,14 @@ param webSitesHttpOnly bool = true
 @allowed(['None', 'SystemAssigned', 'SystemAssigned, UserAssigned', 'UserAssigned'])
 param webSitesIdentityType string  = 'SystemAssigned'
 
-@description('The Function eXtension to define the runtime stack. Default is \'DOTNETCORE|Latest\' but best be specific to not get caught out if .net.core releases a version that you are in compatible with.')
-@allowed(['DOTNETCORE|8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
-param webSitesLinuxFxVersion string
+@description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|8.0\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749 and use \'az webapp list-runtimes --linux\' ')
+// Consider also: 'Node|20'
+// TODO: Keep an eye on this, udating as they become available
+// Observation: DOTNETCORE|Latest did not work.
+// Use:
+// az webapp list-runtimes --linux
+@allowed(['DOTNETCORE|8.0'])
+param webSitesLinuxFxVersion string = 'DOTNETCORE|8.0'
 
 
 // ======================================================================

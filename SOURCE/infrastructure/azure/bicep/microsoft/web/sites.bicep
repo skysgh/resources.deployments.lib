@@ -48,10 +48,14 @@ param resourceTags object = {}
 @description('Whether to only allow https. Should be true.')
 param httpsOnly bool = true
 
-@description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|Latest\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749')
+@description('The Function eXtension to define the runtime stack. Default = \'DOTNETCORE|Latest\'. See https://github.com/MicrosoftDocs/azure-docs/issues/47749 and use \'az webapp list-runtimes --linux\' ')
 // Consider also: 'Node|20'
-@allowed(['DOTNETCORE|8.0','DOTNETCORE|LTS','DOTNETCORE|Latest'])
-param linuxFxVersion string = 'DOTNETCORE|Latest'
+// TODO: Keep an eye on this, udating as they become available
+// Observation: DOTNETCORE|Latest did not work.
+// Use:
+// az webapp list-runtimes --linux
+@allowed(['DOTNETCORE|8.0'])
+param linuxFxVersion string = 'DOTNETCORE|8.0'
 
 
 @description('The type of identity. Default is \'SystemAssigned\' which means creation of *slot specific* Entra Managed Id, that is picked up by outputs at bottom.')
