@@ -16,6 +16,9 @@
 # Mono auto generated files
 mono_crash.*
 
+# PROJECT EXCLUSIONS
+EXCLUDED/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
